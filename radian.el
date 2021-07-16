@@ -4079,7 +4079,40 @@ This runs `org-insert-heading' with
   ;; the highlighting destroys the invisibility added by
   ;; `org-indent-mode'. Therefore, don't highlight when creating a
   ;; sparse tree.
-  (setq org-highlight-sparse-tree-matches nil))
+  (setq org-highlight-sparse-tree-matches nil)
+
+  ;; Set todo keywords
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "DOING(i)" "HANGUP(h)" "|" "DONE(d)" "CANCEL(c)")
+          (sequence "⚑(T)" "🏴(I)" "❓(H)" "|" "✔(D)" "✘(C)"))
+        org-todo-keyword-faces '(("HANGUP" . warning)
+                                 ("❓" . warning))
+        org-priority-faces '((?A . error)
+                             (?B . warning)
+                             (?C . success))
+
+        org-tags-column -80
+        org-log-done 'time
+        org-catch-invisible-edits 'smart
+        org-startup-indented t
+        org-ellipsis (if (and (display-graphic-p) (char-displayable-p ?⏷)) "\t⏷" nil)
+        org-pretty-entities nil
+        org-hide-emphasis-markers t)
+
+  ;; Refile targets
+  (setq org-refile-allow-creating-parent-nodes 'confirm
+        org-refile-targets (quote (("tasklist.org" :maxlevel . 3)
+                                 ("scheduled.org" :maxlevel . 3)
+                                 ("someday.org" :maxlevel . 3)
+                                 ("gtd.org" :maxlevel . 3)
+                                 ("SP.org" :maxlevel . 3)))
+        org-refile-use-outline-path 'file
+        org-outline-path-complete-in-steps nil)
+
+  ;; Add it after refile
+  (advice-add 'org-refile :after
+	      (lambda (&rest _)
+	        (org-save-all-org-buffers))))
 
 ;; Feature `org-indent' provides an alternative view for Org files in
 ;; which sub-headings are indented.
@@ -4137,7 +4170,19 @@ This makes the behavior of `find-file' more reasonable."
       (toggle-truncate-lines +1)))
 
   ;; Hide blocked tasks in the agenda view.
-  (setq org-agenda-dim-blocked-tasks 'invisible))
+  (setq org-agenda-dim-blocked-tasks 'invisible)
+
+  ;; Default org directory
+  (setq org-agenda-files '("~/org/"))
+
+  ;; Specific files to show for custom agenda view
+  (setq org-agenda-custom-commands
+   '(("n" "Agenda and all TODOs"
+      ((agenda "" nil)
+       (alltodo ""
+                ((org-agenda-files
+                  '("~/org/tasklist.org" "~/org/SP.org")))))
+      nil))))
 
 ;; Feature `org-capture' from package `org' provides commands for
 ;; quickly adding an entry to an Org file from anywhere in Emacs.
@@ -4147,11 +4192,25 @@ This makes the behavior of `find-file' more reasonable."
   ;; Don't set bookmarks when using `org-capture', since
   ;; `bookmark-face' may be set to a distracting color by the color
   ;; theme, which makes everything look really ugly.
-  (setq org-capture-bookmark nil))
+  (setq org-capture-bookmark nil)
+
+  ;; Capture templates
+  (setq org-capture-templates
+        `(("i" "Idea" entry (file ,(concat org-directory "/idea.org"))
+           "*  %^{Title} %?\n%U\n%a\n")
+          ("t" "Todo" entry (file ,(concat org-directory "/gtd.org"))
+           "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+          ("n" "Note" entry (file ,(concat org-directory "/note.org"))
+           "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+          ("j" "Journal" entry (file, (concat org-directory "/journal.org"))
+           "*  %^{Title} %?\n%U\n%a\n" :clock-in t :clock-resume t)
+	  ("b" "Book" entry (file, (concat org-directory "/book.org"))
+	   "* Topic: %^{Description}  %^g %? Added: %U"))))
 
 ;; Feature `org-clock' from package `org' provides the task clocking
 ;; functionality.
 (use-feature org-clock
+
   ;; We have to autoload these functions in order for the below code
   ;; that enables clock persistence without slowing down startup to
   ;; work.
