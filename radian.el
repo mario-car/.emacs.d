@@ -5163,6 +5163,16 @@ argument."
 (global-set-key (kbd "C-`") 'push-mark-no-activate)
 (global-set-key (kbd "M-`") 'jump-to-mark)
 
+;; For commands that are useful to use in continuous stream,
+;; defrepeater helps in a way that you don't need to press complete
+;; keybinding sequence, just continue pressing last character
+(use-package defrepeater
+    :init
+    (defrepeater #'winner-undo)
+    (define-key winner-mode-map [remap winner-undo] 'winner-undo-repeat)
+    (global-set-key (kbd "C-x o") (defrepeater #'other-window))
+    )
+
 ;;; Appearance
 
 ;; Make the initial frame maximized, unless using the Mac port in
