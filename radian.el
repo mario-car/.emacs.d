@@ -1839,6 +1839,16 @@ the reverse direction from \\[pop-global-mark]."
   (dolist (func '(bookmark-load bookmark-write-file))
     (advice-add func :around #'radian--advice-silence-messages)))
 
+;; try to browse documents in read-only mode for easier navigation
+(setq view-read-only t)
+(defun my-view-mode-keys ()
+  (define-key view-mode-map (kbd "N") 'View-search-last-regexp-backward)
+  (define-key view-mode-map "?" 'View-search-regexp-backward) ; Less does this.
+  (define-key view-mode-map "G" 'View-goto-line-last)
+  (define-key view-mode-map "j" 'View-scroll-line-forward)
+  (define-key view-mode-map "k" 'View-scroll-line-backward))
+(add-hook 'view-mode-hook 'my-view-mode-keys)
+
 ;;;; Find and replace
 
 (radian-bind-key "c" #'toggle-case-fold-search)
