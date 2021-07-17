@@ -707,6 +707,10 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 
   :blackout t)
 
+;; Default keybinding for move-to-window-line-top-bottom is overriden
+;; by sp-splice package
+(global-set-key (kbd "C-S-l") 'move-to-window-line-top-bottom)
+
 ;;; Environment
 ;;;; Environment variables
 
