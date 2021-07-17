@@ -1911,6 +1911,14 @@ buffer."
     (let ((vr/engine 'emacs-plain))
       (call-interactively #'vr/query-replace))))
 
+;;;; Select text
+
+;; expand-region is useful. But there are existing keybindings for
+;; selecting text like M-@ or C-M-@, so will try to rely on those
+;; instead.
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
 ;;; Electricity: automatic things
 ;;;; Autorevert
 
