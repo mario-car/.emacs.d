@@ -3294,6 +3294,10 @@ Return either a string or nil."
     (when (eq major-mode 'sh-mode)
       (setq mode-name (capitalize (symbol-name sh-shell))))))
 
+;; shell settings
+(add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t)))
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
 ;;;; Swift
 ;; https://developer.apple.com/swift/
 
