@@ -5227,6 +5227,14 @@ turn it off again after creating the first frame."
     (add-to-list 'default-frame-alist '(ns-appearance . dark))
     (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))))
 
+;; cooking for pulse line
+(defun pulse-line (&rest _)
+  "Pulse the current line."
+  (pulse-momentary-highlight-one-line (point)))
+(dolist (command '(scroll-up-command scroll-down-command
+                                     recenter-top-bottom other-window))
+  (advice-add command :after #'pulse-line))
+
 ;;;; Mode line
 
 ;; The following code customizes the mode line to something like:
