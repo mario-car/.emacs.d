@@ -710,6 +710,11 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 ;; Default keybinding for move-to-window-line-top-bottom is overriden
 ;; by sp-splice package
 (global-set-key (kbd "C-S-l") 'move-to-window-line-top-bottom)
+;; Search DIR recursively for files matching the globbing pattern PATTERN
+(global-set-key (kbd "C-<") 'find-name-dired)
+;; Find files in DIR that contain matches for REGEXP
+(global-set-key (kbd "C->") 'find-grep-dired)
+
 
 ;;; Environment
 ;;;; Environment variables
