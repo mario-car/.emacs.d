@@ -4855,7 +4855,8 @@ Instead, display simply a flat colored region in the fringe."
 ;; Package `rg' just provides an interactive command `rg' to run the
 ;; search tool of the same name.
 (use-package rg
-  :bind* (("C-c k" . #'radian-rg))
+  :bind* (("C-c k" . #'radian-rg)
+          ("C-c K" . #'mario-rg))
   :config
 
   (defun radian-rg (&optional only-current-type)
@@ -4865,7 +4866,13 @@ argument, search only in files matching current type."
     (interactive "P")
     (rg-run (rg-read-pattern nil)
             (if only-current-type (car (rg-default-alias)) "*")
-            (rg-project-root buffer-file-name))))
+            (rg-project-root buffer-file-name)))
+  (defun mario-rg ()
+    "Search for string recursively in current directory."
+    (interactive)
+    (rg-run (rg-read-pattern nil)
+            "all"
+            default-directory)))
 
 ;;;; Internet applications
 
