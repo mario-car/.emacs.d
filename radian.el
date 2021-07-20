@@ -714,6 +714,12 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 (global-set-key (kbd "C-<") 'find-name-dired)
 ;; Find files in DIR that contain matches for REGEXP
 (global-set-key (kbd "C->") 'find-grep-dired)
+;; Turn F20 keysim into super modifier
+;; On Linux, F20 is automatically interpreted as "Super" modifier key.
+;; This hack is only needed on MS Windows
+(global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
+(define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier)
+
 
 
 ;;; Environment
