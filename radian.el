@@ -1730,6 +1730,12 @@ invocation will kill the newline."
 
   (delete-selection-mode +1))
 
+;; Improved zap-to-char function
+;; Let's you select to which character should it kill
+(use-package avy-zap
+  :bind (("M-z" . avy-zap-to-char-dwim)
+         ("M-Z" . avy-zap-up-to-char-dwim)))
+
 ;;;; Undo/redo
 
 ;; Feature `warnings' allows us to enable and disable warnings.
