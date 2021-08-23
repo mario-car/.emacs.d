@@ -4148,7 +4148,8 @@ This runs `org-insert-heading' with
                                  ("scheduled.org" :maxlevel . 3)
                                  ("someday.org" :maxlevel . 3)
                                  ("gtd.org" :maxlevel . 3)
-                                 ("SP.org" :maxlevel . 3)))
+                                 ("SP.org" :maxlevel . 3)
+                                 ("project.org" :maxlevel . 3)))
         org-refile-use-outline-path 'file
         org-outline-path-complete-in-steps nil)
 
@@ -4224,7 +4225,7 @@ This makes the behavior of `find-file' more reasonable."
       ((agenda "" nil)
        (alltodo ""
                 ((org-agenda-files
-                  '("~/org/tasklist.org" "~/org/SP.org")))))
+                  '("~/org/tasklist.org" "~/org/SP.org" "~/org/project.org")))))
       nil))))
 
 ;; Feature `org-capture' from package `org' provides commands for
