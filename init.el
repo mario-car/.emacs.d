@@ -1,7 +1,11 @@
 ;; -*- lexical-binding: t -*-
 
 (setq debug-on-error t)
-(setq straight-find-executable (expand-file-name "C:/cygwin64/bin/find.exe"))
+
+;; Radian configuration depends on 'find' program
+;; On Windows Cygwin is required
+(when (eq system-type 'windows-nt)
+  (setq straight-find-executable (expand-file-name "C:/cygwin64/bin/find.exe")))
 
 ;; This file wraps the primary Radian configuration (which lives in
 ;; radian.el) so that we don't have to wrap the entire file in various
