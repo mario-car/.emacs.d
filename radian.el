@@ -1008,24 +1008,6 @@ active minibuffer, even if the minibuffer is not selected."
         (kill-buffer-and-window))
     (funcall func buffer-or-name)))
 
-;; Feature `windmove' provides keybindings S-left, S-right, S-up, and
-;; S-down to move between windows. This is much more convenient and
-;; efficient than using the default binding, C-x o, to cycle through
-;; all of them in an essentially unpredictable order.
-(use-feature windmove
-  :demand t
-  :config
-
-  (windmove-default-keybindings)
-
-  ;; Introduced in Emacs 27:
-
-  (when (fboundp 'windmove-display-default-keybindings)
-    (windmove-display-default-keybindings))
-
-  (when (fboundp 'windmove-delete-default-keybindings)
-    (windmove-delete-default-keybindings)))
-
 ;; Feature `winner' provides an undo/redo stack for window
 ;; configurations, with undo and redo being C-c left and C-c right,
 ;; respectively. (Actually "redo" doesn't revert a single undo, but
@@ -4062,23 +4044,6 @@ messages."
 (use-feature org
   :bind (:map org-mode-map
 
-              ;; Prevent Org from overriding the bindings for
-              ;; windmove. By default, these keys are mapped to
-              ;; `org-shiftleft', etc.
-              ("S-<left>" . nil)
-              ("S-<right>" . nil)
-              ("S-<up>" . nil)
-              ("S-<down>" . nil)
-
-              ;; Add replacements for the keybindings we just removed.
-              ;; C-<left> and C-<right> are unused by Org. C-<up> and
-              ;; C-<down> are bound to `org-backward-paragraph', etc.
-              ;; (but see below).
-              ("C-<left>" . #'org-shiftleft)
-              ("C-<right>" . #'org-shiftright)
-              ("C-<up>" . #'org-shiftup)
-              ("C-<down>" . #'org-shiftdown)
-
               ;; By default, Org maps C-<up> to
               ;; `org-backward-paragraph' instead of
               ;; `backward-paragraph' (and analogously for C-<down>).
@@ -4180,21 +4145,6 @@ This runs `org-insert-heading' with
 ;; functionality, which allows for collating TODO items from your Org
 ;; files into a single buffer.
 (use-feature org-agenda
-  :bind (:map org-agenda-mode-map
-
-              ;; Prevent Org Agenda from overriding the bindings for
-              ;; windmove.
-              ("S-<up>" . nil)
-              ("S-<down>" . nil)
-              ("S-<left>" . nil)
-              ("S-<right>" . nil)
-
-              ;; Same routine as above. Now for Org Agenda, we could use
-              ;; C-up and C-down because M-{ and M-} are bound to the same
-              ;; commands. But I think it's best to take the same approach
-              ;; as before, for consistency.
-              ("C-<left>" . #'org-agenda-do-date-earlier)
-              ("C-<right>" . #'org-agenda-do-date-later))
   :config
 
   (radian-defadvice radian--advice-org-agenda-default-directory
