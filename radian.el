@@ -729,7 +729,8 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 (global-set-key (kbd "M-u") 'upcase-dwim)
 (global-set-key (kbd "M-l") 'downcase-region)
 (global-set-key (kbd "M-c") 'capitalize-dwim)
-
+;; Exchange any two non-overlapping regions in a buffer
+(global-set-key (kbd "C-x C-M-t") 'transpose-regions)
 
 
 ;;; Environment
