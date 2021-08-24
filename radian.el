@@ -720,7 +720,15 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 (when (eq system-type 'windows-nt)
   (global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
   (define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier))
-
+;; Modern versions of Emacs provide Do-What-I-Mean versions of various
+;; editing commands: They act on the region when the region is active,
+;; and on an appropriate semantic unit otherwise. Replace "upcase-word"
+;; and "downcase-word" with "upcase-dwim" and "downcase-dwim"
+;; respectively, and you can safely eject the bindings for
+;; "upcase-region" and "downcase-region".
+(global-set-key (kbd "M-u") 'upcase-dwim)
+(global-set-key (kbd "M-l") 'downcase-region)
+(global-set-key (kbd "M-c") 'capitalize-dwim)
 
 
 
