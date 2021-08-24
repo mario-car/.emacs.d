@@ -4303,9 +4303,6 @@ be invoked before `org-mode-hook' is run."
 
 ;;;; Filesystem management
 
-;; When deleting a file interactively, move it to the trash instead.
-(setq delete-by-moving-to-trash t)
-
 ;; Package `osx-trash' provides functionality that allows Emacs to
 ;; place files in the trash on macOS.
 (use-package osx-trash
