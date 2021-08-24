@@ -717,8 +717,10 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 ;; Turn F20 keysim into super modifier
 ;; On Linux, F20 is automatically interpreted as "Super" modifier key.
 ;; This hack is only needed on MS Windows
-(global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
-(define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier)
+(when (eq system-type 'windows-nt)
+  (global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
+  (define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier))
+
 
 
 
