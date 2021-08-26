@@ -4184,8 +4184,8 @@ This makes the behavior of `find-file' more reasonable."
   (setq org-agenda-custom-commands
    '(("n" "Agenda and all TODOs"
       ((agenda "" nil)
-       (alltodo ""
-                ((org-agenda-files
+       (todo "TODO|DOING"
+             ((org-agenda-files
                   '("~/org/tasklist.org" "~/org/SP.org" "~/org/project.org")))))
       nil))))
 
