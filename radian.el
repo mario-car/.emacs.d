@@ -5280,6 +5280,14 @@ turn it off again after creating the first frame."
                                      recenter-top-bottom other-window))
   (advice-add command :after #'pulse-line))
 
+;; The variable tab-bar-show controls whether the Tab Bar mode is
+;; turned on automatically. If the value is t, then tab-bar-mode is
+;; enabled when using the commands that create new tabs. The value 1
+;; hides the tab bar when it has only one tab, and shows it again when
+;; more tabs are created. The value nil always keeps the tab bar
+;; hidden.
+(setq tab-bar-show 1)
+
 ;;;; Mode line
 
 ;; The following code customizes the mode line to something like:
