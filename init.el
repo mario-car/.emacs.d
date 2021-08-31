@@ -6,6 +6,12 @@
 ;; On Windows Cygwin is required
 (when (eq system-type 'windows-nt)
   (setq straight-find-executable (expand-file-name "C:/cygwin64/bin/find.exe")))
+;; Turn F20 keysim into super modifier
+;; On Linux, F20 is automatically interpreted as "Super" modifier key.
+;; This hack is only needed on MS Windows
+(when (eq system-type 'windows-nt)
+  (global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
+  (define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier))
 
 ;; This file wraps the primary Radian configuration (which lives in
 ;; radian.el) so that we don't have to wrap the entire file in various

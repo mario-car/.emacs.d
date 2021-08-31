@@ -714,12 +714,6 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 (global-set-key (kbd "C-<") 'find-name-dired)
 ;; Find files in DIR that contain matches for REGEXP
 (global-set-key (kbd "C->") 'find-grep-dired)
-;; Turn F20 keysim into super modifier
-;; On Linux, F20 is automatically interpreted as "Super" modifier key.
-;; This hack is only needed on MS Windows
-(when (eq system-type 'windows-nt)
-  (global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
-  (define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier))
 ;; Modern versions of Emacs provide Do-What-I-Mean versions of various
 ;; editing commands: They act on the region when the region is active,
 ;; and on an appropriate semantic unit otherwise. Replace "upcase-word"
