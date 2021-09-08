@@ -2043,6 +2043,11 @@ buffer."
 
     (add-to-list 'sp-ignore-modes-list #'org-agenda-mode))
 
+  ;; Disable Smartparens in nxml-mode, since the keybindings conflict.
+  (use-feature nxml-mode
+    :config
+    (add-to-list 'sp-ignore-modes-list #'nxml-mode))
+
   ;; Make C-k kill the sexp following point in Lisp modes, instead of
   ;; just the current line.
   (bind-key [remap kill-line] #'sp-kill-hybrid-sexp smartparens-mode-map
