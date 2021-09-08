@@ -3321,6 +3321,7 @@ Return either a string or nil."
 ;; shell settings
 (add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t)))
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+(add-hook 'shell-mode-hook (lambda () (company-mode -1)))
 
 ;;;; Swift
 ;; https://developer.apple.com/swift/
