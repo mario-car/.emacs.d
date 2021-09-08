@@ -2349,6 +2349,9 @@ killed (which happens during Emacs shutdown)."
 
   :blackout " LSP")
 
+(use-package lsp-java
+  :hook (java-mode . (lambda () (require 'lsp-java))))
+
 ;;;; Indentation
 
 ;; Don't use tabs for indentation. Use only spaces. Otherwise,
