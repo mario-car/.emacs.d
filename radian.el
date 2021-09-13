@@ -3319,7 +3319,8 @@ Return either a string or nil."
       (setq mode-name (capitalize (symbol-name sh-shell))))))
 
 ;; shell settings
-(add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t)))
+(add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t
+                                            comint-input-ignoredups t)))
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 (add-hook 'shell-mode-hook (lambda () (company-mode -1)))
 
