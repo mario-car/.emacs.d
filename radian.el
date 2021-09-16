@@ -973,9 +973,6 @@ ourselves."
 
 ;;; Window management
 
-;; Prevent accidental usage of `list-buffers'.
-(bind-key "C-x C-b" #'switch-to-buffer)
-
 (radian-defadvice radian--advice-keyboard-quit-minibuffer-first
     (keyboard-quit)
   :around #'keyboard-quit
