@@ -2045,6 +2045,12 @@ buffer."
     :config
     (add-to-list 'sp-ignore-modes-list #'nxml-mode))
 
+  ;; Disable Smartparens in shell mode, since the keybinings conflict.
+  (use-feature shell
+    :config
+    (add-to-list 'sp-ignore-modes-list #'shell-mode))
+
+
   ;; Make C-k kill the sexp following point in Lisp modes, instead of
   ;; just the current line.
   (bind-key [remap kill-line] #'sp-kill-hybrid-sexp smartparens-mode-map
