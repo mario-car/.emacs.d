@@ -2617,7 +2617,7 @@ order."
 (use-package dumb-jump
   :config
 
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 100))
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 80))
 
 ;;;; Display contextual metadata
 
