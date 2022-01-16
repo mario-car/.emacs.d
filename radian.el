@@ -1997,21 +1997,92 @@ buffer."
   ;; Load the default pair definitions for Smartparens.
   (require 'smartparens-config)
 
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; keybinding management
+  (define-key smartparens-mode-map (kbd "C-c s C-M-f") 'sp-forward-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-b") 'sp-backward-sexp)
+
+  (define-key smartparens-mode-map (kbd "C-c s C-M-d") 'sp-down-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-a") 'sp-backward-down-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-S-d") 'sp-beginning-of-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-S-a") 'sp-end-of-sexp)
+
+  (define-key smartparens-mode-map (kbd "C-c s C-M-e") 'sp-up-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-u") 'sp-backward-up-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-t") 'sp-transpose-sexp)
+
+  (define-key smartparens-mode-map (kbd "C-c s C-M-n") 'sp-forward-hybrid-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-p") 'sp-backward-hybrid-sexp)
+
+  (define-key smartparens-mode-map (kbd "C-c s C-M-k") 'sp-kill-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-w") 'sp-copy-sexp)
+
+  (define-key smartparens-mode-map (kbd "C-c s M-<delete>") 'sp-unwrap-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s M-<backspace>") 'sp-backward-unwrap-sexp)
+
+  (define-key smartparens-mode-map (kbd "C-c s C-<right>") 'sp-forward-slurp-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-<left>") 'sp-forward-barf-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-<left>") 'sp-backward-slurp-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-<right>") 'sp-backward-barf-sexp)
+
+  (define-key smartparens-mode-map (kbd "C-c s M-D") 'sp-splice-sexp)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-<delete>") 'sp-splice-sexp-killing-forward)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-<backspace>") 'sp-splice-sexp-killing-backward)
+  (define-key smartparens-mode-map (kbd "C-c s C-S-<backspace>") 'sp-splice-sexp-killing-around)
+
+  (define-key smartparens-mode-map (kbd "C-c s C-]") 'sp-select-next-thing-exchange)
+  (define-key smartparens-mode-map (kbd "C-c s C-<left_bracket>") 'sp-select-previous-thing)
+  (define-key smartparens-mode-map (kbd "C-c s C-M-]") 'sp-select-next-thing)
+
+  (define-key smartparens-mode-map (kbd "C-c s M-F") 'sp-forward-symbol)
+  (define-key smartparens-mode-map (kbd "C-c s M-B") 'sp-backward-symbol)
+
+  (define-key smartparens-mode-map (kbd "C-c s C-\"") 'sp-change-inner)
+  (define-key smartparens-mode-map (kbd "C-c s M-i") 'sp-change-enclosing)
+
+  (bind-key "C-c s f" (lambda () (interactive) (sp-beginning-of-sexp 2)) smartparens-mode-map)
+  (bind-key "C-c s b" (lambda () (interactive) (sp-beginning-of-sexp -2)) smartparens-mode-map)
+
+  ;; (bind-key "C-M-s"
+  ;;           (defhydra smartparens-hydra ()
+  ;;             "Smartparens"
+  ;;             ("d" sp-down-sexp "Down")
+  ;;             ("e" sp-up-sexp "Up")
+  ;;             ("u" sp-backward-up-sexp "Up")
+  ;;             ("a" sp-backward-down-sexp "Down")
+  ;;             ("f" sp-forward-sexp "Forward")
+  ;;             ("b" sp-backward-sexp "Backward")
+  ;;             ("k" sp-kill-sexp "Kill" :color blue)
+  ;;             ("q" nil "Quit" :color blue))
+  ;;           smartparens-mode-map)
+
+  (bind-key "C-c s t" 'sp-prefix-tag-object smartparens-mode-map)
+  (bind-key "C-c s p" 'sp-prefix-pair-object smartparens-mode-map)
+  (bind-key "C-c s y" 'sp-prefix-symbol-object smartparens-mode-map)
+  (bind-key "C-c s h" 'sp-highlight-current-sexp smartparens-mode-map)
+  (bind-key "C-c s e" 'sp-prefix-save-excursion smartparens-mode-map)
+  (bind-key "C-c s s c" 'sp-convolute-sexp smartparens-mode-map)
+  (bind-key "C-c s s a" 'sp-absorb-sexp smartparens-mode-map)
+  (bind-key "C-c s s e" 'sp-emit-sexp smartparens-mode-map)
+  (bind-key "C-c s s p" 'sp-add-to-previous-sexp smartparens-mode-map)
+  (bind-key "C-c s s n" 'sp-add-to-next-sexp smartparens-mode-map)
+  (bind-key "C-c s s j" 'sp-join-sexp smartparens-mode-map)
+  (bind-key "C-c s s s" 'sp-split-sexp smartparens-mode-map)
+  (bind-key "C-c s s r" 'sp-rewrap-sexp smartparens-mode-map)
+  (defvar mario-map)
+  (define-prefix-command 'mario-map)
+  (bind-key "C-c s s x" mario-map smartparens-mode-map)
+  (bind-key "C-c s s x x" 'sp-extract-before-sexp smartparens-mode-map)
+  (bind-key "C-c s s x a" 'sp-extract-after-sexp smartparens-mode-map)
+  (bind-key "C-c s s x s" 'sp-swap-enclosing-sexp smartparens-mode-map)
+
+  (bind-key "C-c C-x C-t" 'sp-transpose-hybrid-sexp smartparens-mode-map)
+
+  (bind-key ";" 'sp-comment emacs-lisp-mode-map)
+
   ;; Enable Smartparens functionality in all buffers.
   (smartparens-global-mode +1)
-
-  ;; When in Paredit emulation mode, Smartparens binds M-( to wrap the
-  ;; following s-expression in round parentheses. By analogy, we
-  ;; should bind M-[ to wrap the following s-expression in square
-  ;; brackets. However, this breaks escape sequences in the terminal,
-  ;; so it may be controversial upstream. We only enable the
-  ;; keybinding in windowed mode.
-  (when (display-graphic-p)
-    (setf (map-elt sp-paredit-bindings "M-[") #'sp-wrap-square))
-
-  ;; Set up keybindings for s-expression navigation and manipulation
-  ;; in the style of Paredit.
-  (sp-use-paredit-bindings)
 
   ;; Highlight matching delimiters.
   (show-smartparens-global-mode +1)
@@ -2026,93 +2097,6 @@ buffer."
   ;; type over the closing delimiter as long as you didn't leave the
   ;; sexp entirely.)
   (setq sp-cancel-autoskip-on-backward-movement nil)
-
-  ;; Disable Smartparens in Org-related modes, since the keybindings
-  ;; conflict.
-
-  (use-feature org
-    :config
-
-    (add-to-list 'sp-ignore-modes-list #'org-mode))
-
-  (use-feature org-agenda
-    :config
-
-    (add-to-list 'sp-ignore-modes-list #'org-agenda-mode))
-
-  ;; Disable Smartparens in nxml-mode, since the keybindings conflict.
-  (use-feature nxml-mode
-    :config
-    (add-to-list 'sp-ignore-modes-list #'nxml-mode))
-
-  ;; Disable Smartparens in shell mode, since the keybinings conflict.
-  (use-feature shell
-    :config
-    (add-to-list 'sp-ignore-modes-list #'shell-mode))
-
-
-  ;; Make C-k kill the sexp following point in Lisp modes, instead of
-  ;; just the current line.
-  (bind-key [remap kill-line] #'sp-kill-hybrid-sexp smartparens-mode-map
-            (apply #'derived-mode-p sp-lisp-modes))
-
-  (defun radian--smartparens-indent-new-pair (&rest _)
-    "Insert an extra newline after point, and reindent."
-    (newline)
-    (indent-according-to-mode)
-    (forward-line -1)
-    (indent-according-to-mode))
-
-  ;; The following is a really absurdly stupid hack that I can barely
-  ;; stand to look at. It needs to be fixed.
-  ;;
-  ;; Nevertheless, I can't live without the feature it provides (which
-  ;; should really come out of the box IMO): when pressing RET after
-  ;; inserting a pair, add an extra newline and indent. See
-  ;; <https://github.com/Fuco1/smartparens/issues/80#issuecomment-18910312>.
-
-  (defun radian--smartparens-pair-setup (mode delim)
-    "In major mode MODE, set up DELIM with newline-and-indent."
-    (sp-local-pair mode delim nil :post-handlers
-                   '((radian--smartparens-indent-new-pair "RET")
-                     (radian--smartparens-indent-new-pair "<return>"))))
-
-  (radian--smartparens-pair-setup #'prog-mode "(")
-  (radian--smartparens-pair-setup #'prog-mode "[")
-  (radian--smartparens-pair-setup #'prog-mode "{")
-  (radian--smartparens-pair-setup #'python-mode "\"\"\"")
-  (radian--smartparens-pair-setup #'latex-mode "\\[")
-  (radian--smartparens-pair-setup #'markdown-mode "```")
-  (radian--smartparens-pair-setup #'css-mode "{")
-
-  ;; It's unclear to me why any of this is needed.
-  (radian--smartparens-pair-setup #'json-mode "[")
-  (radian--smartparens-pair-setup #'json-mode "{")
-  (radian--smartparens-pair-setup #'tex-mode "{")
-
-  ;; Deal with `protobuf-mode' not using `define-minor-mode'.
-  (radian--smartparens-pair-setup #'protobuf-mode "{")
-
-  ;; Work around https://github.com/Fuco1/smartparens/issues/1036.
-  (when (fboundp 'minibuffer-mode)
-    (sp-local-pair #'minibuffer-mode "`" nil :actions nil)
-    (sp-local-pair #'minibuffer-mode "'" nil :actions nil))
-
-  ;; Work around https://github.com/Fuco1/smartparens/issues/783.
-  (setq sp-escape-quotes-after-insert nil)
-
-  ;; For some reason two C-g's are required to exit out of the
-  ;; minibuffer if you've just typed a parenthesis pair. This appears
-  ;; to be intentional, but doesn't make a lot of intuitive sense
-  ;; since we've disabled highlighting. Kill the problematic
-  ;; keybinding. See also
-  ;; https://github.com/Fuco1/smartparens/pull/890 which was about a
-  ;; similar problem.
-  (define-key sp-pair-overlay-keymap (kbd "C-g") nil)
-
-  ;; Quiet some silly messages.
-  (dolist (key '(:unmatched-expression :no-matching-tag))
-    (setf (cdr (assq key sp-message-alist)) nil))
 
   :blackout t)
 
