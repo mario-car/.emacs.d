@@ -1896,20 +1896,12 @@ invocation will kill the newline."
   ;; undo information is too large to be recorded.
   (add-to-list 'warning-suppress-log-types '(undo discard-info)))
 
-;; Package `undo-tree' replaces the default Emacs undo system, which
-;; is poorly designed and hard to use, with a much more powerful
+;; Package `undo-tree' replaces the default Emacs undo system, with a
 ;; tree-based system. In basic usage, you don't even have to think
 ;; about the tree, because it acts like a conventional undo/redo
 ;; system. Bindings are C-/, M-/, and C-x u.
 (use-package undo-tree
   :demand t
-  :bind (;; By default, `undo' (and by extension `undo-tree-undo') is
-         ;; bound to C-_ and C-/, and `undo-tree-redo' is bound to
-         ;; M-_. It's logical to also bind M-/ to `undo-tree-redo'.
-         ;; This overrides the default binding of M-/, which is to
-         ;; `dabbrev-expand'.
-         :map undo-tree-map
-         ("M-/" . #'undo-tree-redo))
   :config
 
   (global-undo-tree-mode +1)
@@ -1922,11 +1914,6 @@ Normally, this message is printed when undo history could not be
 loaded since the file was changed outside of Emacs."
     (let ((inhibit-message t))
       (apply undo-tree-load-history args)))
-
-  ;; Disable undo-in-region. It sounds like a cool feature, but
-  ;; unfortunately the implementation is very buggy and usually causes
-  ;; you to lose your undo history if you use it by accident.
-  (setq undo-tree-enable-undo-in-region nil)
 
   :blackout t)
 
