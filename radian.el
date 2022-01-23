@@ -709,6 +709,17 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 ;; Exchange any two non-overlapping regions in a buffer
 (global-set-key (kbd "C-x C-M-t") 'transpose-regions)
 
+;; Personal keymap
+;; Replace suspend-frame which this keymap since suspend-frame is
+;; never useful and always unexpected and by accident.
+(progn
+  ;; define key sequence
+  (define-prefix-command 'my-keymap)
+  (global-set-key (kbd "C-x C-z" ) my-keymap )
+  (define-key my-keymap (kbd "t s") 'shell)
+  ; populate with personal keybinding sequences
+  )
+
 
 ;;; Environment
 ;;;; Environment variables
