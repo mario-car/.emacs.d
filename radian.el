@@ -2729,6 +2729,8 @@ order."
                             (not))
                       (cl-return t)))))))
 
+(bind-key "M-/" 'hippie-expand)
+
 ;;;; Definition location
 
 ;; Feature `xref' provides the built-in Emacs interface for source
