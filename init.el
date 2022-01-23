@@ -13,6 +13,12 @@
   (global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
   (define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier))
 
+;; Turn <apps> (menu) into hyper modifier
+(when (eq system-type 'gnu/linux)
+  (global-set-key (kbd "<menu>") nil))
+(define-key function-key-map (kbd "<apps>") 'event-apply-hyper-modifier)
+
+
 ;; This file wraps the primary Radian configuration (which lives in
 ;; radian.el) so that we don't have to wrap the entire file in various
 ;; `let' forms, etc. We put as much as possible in radian.el.
