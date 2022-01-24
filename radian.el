@@ -1176,12 +1176,19 @@ active minibuffer, even if the minibuffer is not selected."
 ;; `transpose-frame', `rotate-frame-clockwise',
 ;; `rotate-frame-anticlockwise', `rotate-frame'.
 (use-package transpose-frame
-  :bind* (("s-t" . #'transpose-frame)))
+  :bind* (("C-t t" . #'transpose-frame)
+          ("C-t r" . #'rotate-frame-clockwise)
+          ("C-t f" . #'flip-frame)
+          ("C-t g" . #'flop-frame)))
 
 ;; Package `buffer-move' provides simple commands to swap Emacs
 ;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
 ;; `buf-move-right'.
-(use-package buffer-move)
+(use-package buffer-move
+  :bind* (("C-t k" . #'buf-move-up)
+          ("C-t j" . #'buf-move-down)
+          ("C-t h" . #'buf-move-left)
+          ("C-t l" . #'buf-move-right)))
 
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
