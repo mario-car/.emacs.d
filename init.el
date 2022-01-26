@@ -6,18 +6,22 @@
 ;; On Windows Cygwin is required
 (when (eq system-type 'windows-nt)
   (setq straight-find-executable (expand-file-name "C:/cygwin64/bin/find.exe")))
+
 ;; Turn F20 keysim into super modifier
 ;; On Linux, F20 is automatically interpreted as "Super" modifier key.
 ;; This hack is only needed on MS Windows
 (when (eq system-type 'windows-nt)
   (global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
-  (define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier))
+  (define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier)
+  (setq w32-pass-rwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  (w32-register-hot-key [s-]))
 
 ;; Turn <apps> (menu) into hyper modifier
-(when (eq system-type 'gnu/linux)
-  (global-set-key (kbd "<menu>") nil))
-(define-key function-key-map (kbd "<apps>") 'event-apply-hyper-modifier)
-
+;; On Linux rebind <apps> to Hyper via xmodmap
+(when (eq system-type 'windows-nt)
+  (setq w32-pass-apps-to-system nil)
+  (setq w32-apps-modifier 'hyper)) ; Menu/App key
 
 ;; This file wraps the primary Radian configuration (which lives in
 ;; radian.el) so that we don't have to wrap the entire file in various
