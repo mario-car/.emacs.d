@@ -3608,21 +3608,6 @@ environment with point at the end of a non-empty line of text."
   ;; sizes.
   (setq font-latex-fontify-sectioning 1))
 
-;;;; VimScript
-;; http://vimdoc.sourceforge.net/htmldoc/usr_41.html
-
-;; Package `vimrc-mode' provides a major mode for VimScript.
-;; Provides syntax highlighting for VimScript files.
-(use-package vimrc-mode
-  :config
-
-  (radian-defhook radian--fix-vimrc-indentation ()
-    vimrc-mode-hook
-    "Indent by two spaces in `vimrc-mode' rather than eight."
-    ;; Based on https://stackoverflow.com/a/1819405/3538165.
-    (setq-local tab-width 2)
-    (setq-local indent-line-function 'insert-tab)))
-
 ;;;; Web
 ;; https://developer.mozilla.org/en-US/docs/web/HTML
 ;; https://developer.mozilla.org/en-US/docs/Web/CSS
