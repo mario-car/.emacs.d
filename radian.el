@@ -4403,29 +4403,6 @@ be invoked before `org-mode-hook' is run."
                  org-clock-cancel))
     (advice-add fun :before #'radian--advice-org-clock-load-automatically)))
 
-;;;; Filesystem management
-
-;; Package `osx-trash' provides functionality that allows Emacs to
-;; place files in the trash on macOS.
-(use-package osx-trash
-  :commands (osx-trash-move-file-to-trash)
-  :init/el-patch
-
-  (defun osx-trash-setup ()
-    "Provide trash support for OS X.
-
-Provide `system-move-file-to-trash' as an alias for
-`osx-trash-move-file-to-trash'.
-
-Note that you still need to set `delete-by-moving-to-trash' to a
-non-nil value to enable trashing for file operations."
-    (when (and (eq system-type 'darwin)
-               (not (fboundp 'system-move-file-to-trash)))
-      (defalias 'system-move-file-to-trash
-        'osx-trash-move-file-to-trash)))
-
-  (osx-trash-setup))
-
 ;;;;; Dired
 
 ;; Dired has some trouble parsing out filenames that have e.g. leading
