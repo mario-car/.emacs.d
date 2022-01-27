@@ -720,9 +720,6 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
   ; populate with personal keybinding sequences
   )
 
-;; repeat command is useful, try faster keybinding
-(bind-key "C-z" #'repeat)
-
 
 ;;; Environment
 ;;;; Environment variables
