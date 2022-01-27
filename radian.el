@@ -642,25 +642,6 @@ level of init.local.el."
 (use-package bind-key
   :demand t)
 
-;; Normalize behavior for the Mac port (i.e. make it behave like
-;; normal Emacs on macOS does). By default alt does the default macOS
-;; alt thing, while command acts as meta instead of super. Also all
-;; the default bindings are gone for some reason :'(
-(when (radian-operating-system-p macOS)
-  (when (and (boundp 'mac-option-modifier)
-             (boundp 'mac-command-modifier))
-    (setq mac-option-modifier 'meta)
-    (setq mac-command-modifier 'super))
-
-  (bind-key "s-z" #'undo-tree-undo)
-  (bind-key "s-x" #'kill-region)
-  (bind-key "s-c" #'kill-ring-save)
-  (bind-key "s-v" #'yank)
-  (bind-key "s-n" #'make-frame)
-  (bind-key "s-s" #'save-buffer)
-  (bind-key "s-w" #'delete-frame)
-  (bind-key "s-q" #'save-buffers-kill-terminal))
-
 (defvar radian-keymap (make-sparse-keymap)
   "Keymap for Radian commands that should be put under a prefix.
 This keymap is bound under \\[radian-keymap].")
@@ -720,6 +701,8 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
   ; populate with personal keybinding sequences
   )
 
+;; Easier to press `repeat' command
+(bind-key "<f5>" #'repeat )
 
 ;;; Environment
 ;;;; Environment variables
@@ -787,64 +770,6 @@ startup.")
 
 ;;;; Clipboard integration
 
-;; On macOS, clipboard integration works out of the box in windowed
-;; mode but not terminal mode. The following code to fix it was
-;; originally based on [1], and then modified based on [2].
-;;
-;; [1]: https://gist.github.com/the-kenny/267162
-;; [2]: https://emacs.stackexchange.com/q/26471/12534
-(radian-with-operating-system macOS
-  (unless (display-graphic-p)
-
-    (defvar radian--clipboard-last-copy nil
-      "The last text that was copied to the system clipboard.
-This is used to prevent duplicate entries in the kill ring.")
-
-    (eval-and-compile
-      (defun radian--clipboard-paste ()
-        "Return the contents of the macOS clipboard, as a string."
-        (let* (;; Setting `default-directory' to a directory that is
-               ;; sure to exist means that this code won't error out
-               ;; when the directory for the current buffer does not
-               ;; exist.
-               (default-directory "/")
-               ;; Command pbpaste returns the clipboard contents as a
-               ;; string.
-               (text (shell-command-to-string "pbpaste")))
-          ;; If this function returns nil then the system clipboard is
-          ;; ignored and the first element in the kill ring (which, if
-          ;; the system clipboard has not been modified since the last
-          ;; kill, will be the same) is used instead. Including this
-          ;; `unless' clause prevents you from getting the same text
-          ;; yanked the first time you run `yank-pop'.
-          (unless (string= text radian--clipboard-last-copy)
-            text)))
-
-      (defun radian--clipboard-copy (text)
-        "Set the contents of the macOS clipboard to given TEXT string."
-        (let* (;; Setting `default-directory' to a directory that is
-               ;; sure to exist means that this code won't error out
-               ;; when the directory for the current buffer does not
-               ;; exist.
-               (default-directory "/")
-               ;; Setting `process-connection-type' makes Emacs use a pipe to
-               ;; communicate with pbcopy, rather than a pty (which is
-               ;; overkill).
-               (process-connection-type nil)
-               ;; The nil argument tells Emacs to discard stdout and
-               ;; stderr. Note, we aren't using `call-process' here
-               ;; because we want this command to be asynchronous.
-               ;;
-               ;; Command pbcopy writes stdin to the clipboard until it
-               ;; receives EOF.
-               (proc (start-process "pbcopy" nil "pbcopy")))
-          (process-send-string proc text)
-          (process-send-eof proc))
-        (setq radian--clipboard-last-copy text)))
-
-    (setq interprogram-paste-function #'radian--clipboard-paste)
-    (setq interprogram-cut-function #'radian--clipboard-copy)))
-
 ;; If you have something on the system clipboard, and then kill
 ;; something in Emacs, then by default whatever you had on the system
 ;; clipboard is gone and there is no way to get it back. Setting the
@@ -867,11 +792,10 @@ convert\" UTF8_STRING)'. Disable that."
 
 ;;;; Mouse integration
 
-;; Scrolling is way too fast on macOS with Emacs 27 and on Linux in
-;; general. Decreasing the number of lines we scroll per mouse event
-;; improves the situation. Normally, holding shift allows this slower
-;; scrolling; instead, we make it so that holding shift accelerates
-;; the scrolling.
+;; Scrolling is way too fast with Emacs 27. Decreasing the number of
+;; lines we scroll per mouse event improves the situation. Normally,
+;; holding shift allows this slower scrolling; instead, we make it so
+;; that holding shift accelerates the scrolling.
 (setq mouse-wheel-scroll-amount
       '(1 ((shift) . 5) ((control))))
 
@@ -2084,8 +2008,7 @@ buffer."
 ;;; Electricity: automatic things
 ;;;; Autorevert
 
-;; On macOS, Emacs has a nice keybinding to revert the current buffer.
-;; On other platforms such a binding is missing; we re-add it here.
+;; Bind revert-buffer to a easily accessable key
 (bind-key "C-c u" #'revert-buffer)
 
 ;; Feature `autorevert' allows the use of file-watchers or polling in
@@ -3499,18 +3422,6 @@ Return either a string or nil."
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
 
-  (radian-with-operating-system macOS
-    (when (or (file-directory-p "/Applications/TeXShop.app")
-              (file-directory-p "/Applications/TeX/TeXShop.app"))
-
-      ;; Use TeXShop for previewing LaTeX, rather than Preview. This
-      ;; means we have to define the command to run TeXShop as a "viewer
-      ;; program", and then tell AUCTeX to use the TeXShop viewer when
-      ;; opening PDFs.
-      (add-to-list 'TeX-view-program-list
-                   '("TeXShop" "/usr/bin/open -a TeXShop.app %s.pdf"))
-      (setf (map-elt TeX-view-program-selection 'output-pdf) '("TeXShop"))))
-
   (radian-defadvice radian--advice-inhibit-tex-style-loading-message
       (TeX-load-style-file file)
     :around #'TeX-load-style-file
@@ -4492,17 +4403,7 @@ the problematic case.)"
   :config
 
   ;; Prevent annoying "Omitted N lines" messages when auto-reverting.
-  (setq dired-omit-verbose nil)
-
-  (radian-with-operating-system macOS
-    (radian-defadvice radian--advice-dired-guess-open-on-macos
-        (&rest _)
-      :override #'dired-guess-default
-      "Cause Dired's '!' command to use open(1).
-This advice is only activated on macOS, where it is helpful since
-most of the Linux utilities in `dired-guess-shell-alist-default'
-are probably not going to be installed."
-      "open")))
+  (setq dired-omit-verbose nil))
 
 ;;;; Terminal emulator
 
@@ -5162,17 +5063,6 @@ an effect for Emacs 26 or below."
     (scroll-bar-mode -1))
   (tool-bar-mode -1)
 
-  (radian-with-operating-system macOS
-
-    (radian-defhook radian--disable-menu-bar-again-on-macos (_)
-      after-make-frame-functions
-      "Disable the menu bar again, because macOS is dumb.
-On macOS, for some reason you can't disable the menu bar once it
-appears, and also `menu-bar-mode' doesn't prevent the menu bar
-from appearing when run during early init. So we do a hack and
-turn it off again after creating the first frame."
-      (menu-bar-mode -1)))
-
   ;; Prevent the cursor from blinking. Do it two ways: using the minor
   ;; mode only works during regular init, while using the variable
   ;; only works during early init.
@@ -5191,12 +5081,7 @@ turn it off again after creating the first frame."
 
   ;; Use the same font for fixed-pitch text as the rest of Emacs (you
   ;; *are* using a monospace font, right?).
-  (set-face-attribute 'fixed-pitch nil :family 'unspecified)
-
-  ;; On macOS, set the title bar to match the frame background.
-  (radian-with-operating-system macOS
-    (add-to-list 'default-frame-alist '(ns-appearance . dark))
-    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))))
+  (set-face-attribute 'fixed-pitch nil :family 'unspecified))
 
 ;; cooking for pulse line
 (defun pulse-line (&rest _)
