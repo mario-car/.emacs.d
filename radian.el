@@ -715,7 +715,7 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
 (progn
   ;; define key sequence
   (define-prefix-command 'my-keymap)
-  (global-set-key (kbd "C-x C-z" ) my-keymap )
+  (global-set-key (kbd "C-z" ) my-keymap )
   (define-key my-keymap (kbd "t s") 'shell)
   ; populate with personal keybinding sequences
   )
@@ -1176,19 +1176,19 @@ active minibuffer, even if the minibuffer is not selected."
 ;; `transpose-frame', `rotate-frame-clockwise',
 ;; `rotate-frame-anticlockwise', `rotate-frame'.
 (use-package transpose-frame
-  :bind* (("C-t t" . #'transpose-frame)
-          ("C-t r" . #'rotate-frame-clockwise)
-          ("C-t f" . #'flip-frame)
-          ("C-t g" . #'flop-frame)))
+  :bind* (("C-x C-z t" . #'transpose-frame)
+          ("C-x C-z r" . #'rotate-frame-clockwise)
+          ("C-x C-z f" . #'flip-frame)
+          ("C-x C-z g" . #'flop-frame)))
 
 ;; Package `buffer-move' provides simple commands to swap Emacs
 ;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
 ;; `buf-move-right'.
 (use-package buffer-move
-  :bind* (("C-t k" . #'buf-move-up)
-          ("C-t j" . #'buf-move-down)
-          ("C-t h" . #'buf-move-left)
-          ("C-t l" . #'buf-move-right)))
+  :bind* (("C-x C-z k" . #'buf-move-up)
+          ("C-x C-z j" . #'buf-move-down)
+          ("C-x C-z h" . #'buf-move-left)
+          ("C-x C-z l" . #'buf-move-right)))
 
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
