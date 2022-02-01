@@ -702,7 +702,12 @@ KEY-NAME, COMMAND, and PREDICATE are as in `bind-key'."
   )
 
 ;; Easier to press `repeat' command
-(bind-key "<f5>" #'repeat )
+(bind-key "<f5>" #'repeat)
+(bind-key "H-." #'repeat)
+;; Maybe useful
+(bind-key "s-z" #'copy-from-above-command)
+
+
 
 ;;; Environment
 ;;;; Environment variables
@@ -1805,6 +1810,18 @@ invocation will kill the newline."
 
   (delete-selection-mode +1))
 
+;; Custom function to copy whole line.
+;; It will copy from the first character on the line until the end of
+;; line. It will ignore whitespace at the beginning of line.
+(defun copy-whole-line ()
+  "Copy whole line"
+  (interactive)
+  (save-excursion
+    (back-to-indentation)
+    (kill-ring-save (point)
+                    (line-end-position))))
+(bind-key "s-w" #'copy-whole-line)
+
 ;; Improved zap-to-char function
 ;; Let's you select to which character should it kill
 (use-package avy-zap
@@ -1931,6 +1948,11 @@ the reverse direction from \\[pop-global-mark]."
   (define-key view-mode-map "j" 'View-scroll-line-forward)
   (define-key view-mode-map "k" 'View-scroll-line-backward))
 (add-hook 'view-mode-hook 'my-view-mode-keys)
+
+
+;; jump to character
+(use-package avy
+  :bind (("s-." . avy-goto-char-timer)))
 
 ;;;; Find and replace
 
