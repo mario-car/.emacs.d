@@ -1811,13 +1811,6 @@ invocation will kill the newline."
   :bind (("M-z" . avy-zap-to-char-dwim)
          ("M-Z" . avy-zap-up-to-char-dwim)))
 
-;; Provide commands easy-kill and easy-mark to let users kill or mark
-;; things easily.
-(use-package easy-kill
-  :init
-  (global-set-key [remap kill-ring-save] 'easy-kill)
-  (global-set-key [remap mark-sexp] 'easy-mark))
-
 ;;;; Undo/redo
 
 ;; Feature `warnings' allows us to enable and disable warnings.
