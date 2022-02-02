@@ -2018,7 +2018,106 @@ buffer."
 ;; selecting text like M-@ or C-M-@, so will try to rely on those
 ;; instead.
 (use-package expand-region
-  :bind ("C-=" . er/expand-region))
+  :bind (("C-=" . er/expand-region)
+         ("s-o" . change-outer)
+         ("s-i" . change-inner)
+         ("s-O" . copy-outer)
+         ("s-I" . copy-inner))
+  :config
+  ;; this code snippets have been taken from Magnar Sveen
+  ;; https://github.com/magnars/change-inner.el
+  (eval-when-compile (require 'cl))
+  (defun ci--flash-region (start end)
+    "Temporarily highlight region from START to END."
+    (let ((overlay (make-overlay start end)))
+      (overlay-put overlay 'face 'secondary-selection)
+      (overlay-put overlay 'priority 100)
+      (run-with-timer 0.2 nil 'delete-overlay overlay)))
+
+  (defun change-inner* (yank? search-forward-char)
+    "Works like vim's ci command. Takes a char, like ( or \" and
+kills the innards of the first ancestor semantic unit starting with that char."
+    (let* ((expand-region-fast-keys-enabled nil)
+           (expand-region-smart-cursor nil)
+           (char (or search-forward-char
+                     (char-to-string
+                      (read-char
+                       (if yank?
+                           "Yank inner, starting with:"
+                         "Change inner, starting with:")))))
+           (q-char (regexp-quote char))
+           (starting-point (point)))
+      (when search-forward-char
+        (search-forward char (point-at-eol)))
+      (flet ((message (&rest args) nil))
+            (er--expand-region-1)
+            (er--expand-region-1)
+            (while (and (not (= (point) (point-min)))
+                        (not (looking-at q-char)))
+              (er--expand-region-1))
+            (if (not (looking-at q-char))
+                (if search-forward-char
+                    (error "Couldn't find any expansion starting with %S" char)
+                  (goto-char starting-point)
+                  (setq mark-active nil)
+                  (change-inner* yank? char))
+              (er/contract-region 1)
+              (if yank?
+                  (progn
+                    (copy-region-as-kill (region-beginning) (region-end))
+                    (ci--flash-region (region-beginning) (region-end))
+                    (goto-char starting-point))
+                (kill-region (region-beginning) (region-end)))))))
+
+  (defun change-inner (arg)
+    (interactive "P")
+    (change-inner* arg nil))
+
+  (defun copy-inner ()
+    (interactive)
+    (change-inner* t nil))
+
+  (defun change-outer* (yank? search-forward-char)
+    "Works like vim's ci command. Takes a char, like ( or \" and
+kills the first ancestor semantic unit starting with that char."
+    (let* ((expand-region-fast-keys-enabled nil)
+           (expand-region-smart-cursor nil)
+           (char (or search-forward-char
+                     (char-to-string
+                      (read-char
+                       (if yank?
+                           "Yank outer, starting with:"
+                         "Change outer, starting with:")))))
+           (q-char (regexp-quote char))
+           (starting-point (point)))
+      (when search-forward-char
+        (search-forward char (point-at-eol)))
+      (flet ((message (&rest args) nil))
+            (when (looking-at q-char)
+              (er/expand-region 1))
+            (while (and (not (= (point) (point-min)))
+                        (not (looking-at q-char)))
+              (er/expand-region 1))
+            (if (not (looking-at q-char))
+                (if search-forward-char
+                    (error "Couldn't find any expansion starting with %S" char)
+                  (goto-char starting-point)
+                  (setq mark-active nil)
+                  (change-outer* yank? char))
+              (if yank?
+                  (progn
+                    (copy-region-as-kill (region-beginning) (region-end))
+                    (ci--flash-region (region-beginning) (region-end))
+                    (goto-char starting-point))
+                (kill-region (region-beginning) (region-end)))))))
+
+  (defun change-outer (arg)
+    (interactive "P")
+    (change-outer* arg nil))
+
+  (defun copy-outer ()
+    (interactive)
+    (change-outer* t nil)))
 
 ;;; Electricity: automatic things
 ;;;; Autorevert
