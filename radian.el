@@ -1958,16 +1958,6 @@ the reverse direction from \\[pop-global-mark]."
 
 (radian-bind-key "c" #'toggle-case-fold-search)
 
-;; Package `ctrlf' provides a replacement for `isearch' that is more
-;; similar to the tried-and-true text search interfaces in web
-;; browsers and other programs (think of what happens when you type
-;; ctrl+F).
-(use-package ctrlf
-  :straight (:host github :repo "raxod502/ctrlf")
-  :init
-
-  (ctrlf-mode +1))
-
 ;; Feature `fileloop' provides the underlying machinery used to do
 ;; operations on multiple files, such as find-and-replace.
 (radian-when-compiletime (version<= "27" emacs-version)
@@ -5278,6 +5268,9 @@ spaces."
                         (format-mode-line radian-mode-line-left)
                         (format-mode-line radian-mode-line-right))
                        'fixedcase 'literal)))
+
+;; Make isearch show number of candidates on the mode line
+(setq isearch-lazy-count t)
 
 ;;;; Color theme
 
