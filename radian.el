@@ -1062,31 +1062,9 @@ ourselves."
 
 ;;; Window management
 
-(radian-defadvice radian--advice-keyboard-quit-minibuffer-first
-    (keyboard-quit)
-  :around #'keyboard-quit
-  "Cause \\[keyboard-quit] to exit the minibuffer, if it is active.
-Normally, \\[keyboard-quit] will just act in the current buffer.
-This advice modifies the behavior so that it will instead exit an
-active minibuffer, even if the minibuffer is not selected."
-  (if-let ((minibuffer (active-minibuffer-window)))
-      (progn
-        (switch-to-buffer (window-buffer minibuffer))
-        (minibuffer-keyboard-quit))
-    (funcall keyboard-quit)))
-
-(radian-defadvice radian--advice-kill-buffer-maybe-kill-window
-    (func &optional buffer-or-name kill-window-too)
-  :around #'kill-buffer
-  "Make it so \\[universal-argument] \\[kill-buffer] kills the window too."
-  (interactive
-   (lambda (spec)
-     (append (or (advice-eval-interactive-spec spec) '(nil))
-             current-prefix-arg)))
-  (if kill-window-too
-      (with-current-buffer buffer-or-name
-        (kill-buffer-and-window))
-    (funcall func buffer-or-name)))
+;; I hardly ever want to to kill buffer other then the one I'm in when
+;; I call this function.
+(global-set-key [remap kill-buffer] 'kill-this-buffer)
 
 ;; Feature `winner' provides an undo/redo stack for window
 ;; configurations, with undo and redo being C-c left and C-c right,
