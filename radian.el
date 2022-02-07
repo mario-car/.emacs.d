@@ -1934,7 +1934,13 @@ the reverse direction from \\[pop-global-mark]."
 
 ;;;; Find and replace
 
-(radian-bind-key "c" #'toggle-case-fold-search)
+(use-package isearch :straight (:type built-in)
+  :config
+  ;; Make isearch show number of candidates on the mode line
+  (setq isearch-lazy-count t)
+  ;; Interpret a space character as a wildcard
+  (setq search-whitespace-regexp ".*")
+  (setq isearch-lax-whitespace t))
 
 ;; Feature `fileloop' provides the underlying machinery used to do
 ;; operations on multiple files, such as find-and-replace.
@@ -5246,9 +5252,6 @@ spaces."
                         (format-mode-line radian-mode-line-left)
                         (format-mode-line radian-mode-line-right))
                        'fixedcase 'literal)))
-
-;; Make isearch show number of candidates on the mode line
-(setq isearch-lazy-count t)
 
 ;;;; Color theme
 
