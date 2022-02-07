@@ -930,7 +930,7 @@ ourselves."
          ("M-s d" . consult-find)
          ("M-s D" . consult-locate)
          ("M-s g" . (lambda () (interactive) (let ((consult-project-root-function nil))
-                                               (consult-git-grep))))
+                                               (consult-grep))))
          ("M-s G" . consult-git-grep)
          ("M-s r" . consult-ripgrep)
          ("M-s l" . consult-line)
