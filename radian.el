@@ -3464,6 +3464,11 @@ Return either a string or nil."
   (dolist (func '(sh-set-shell sh-make-vars-local))
     (advice-add func :around #'radian--advice-silence-messages))
 
+  ;; This is bind to sh-set-indent, and I don't use this. Since at the
+  ;; moment I have no use for this keybinding, and it conflicts with
+  ;; my keybinding for diff package, I'll turn it off.
+  (define-key sh-mode-map "\C-c=" nil)
+
   (radian-defhook radian--sh-prettify-mode-line ()
     sh-mode-hook
     "Instead of \"Shell[bash]\", display mode name as \"Bash\"."
@@ -4515,6 +4520,21 @@ the problematic case.)"
   ;; warning messages and prompts, especially regarding symlinks. See
   ;; https://stackoverflow.com/a/6190338/3538165.
   (setq vc-handled-backends nil))
+
+;; Comparing files and buffers, and finding differences.
+(use-package ediff
+  :bind (("C-c = b" . ediff-buffers)
+         ("C-c = B" . ediff-buffers3)
+         ("C-c = c" . compare-windows)
+         ("C-c = =" . ediff-files)
+         ("C-c = f" . ediff-files)
+         ("C-c = F" . ediff-files3)
+         ("C-c = m" . count-matches)
+         ("C-c = r" . ediff-revision)
+         ("C-c = p" . ediff-patch-file)
+         ("C-c = P" . ediff-patch-buffer)
+         ("C-c = l" . ediff-regions-linewise)
+         ("C-c = w" . ediff-regions-wordwise)))
 
 ;; Feature `smerge-mode' provides an interactive mode for visualizing
 ;; and resolving Git merge conflicts.
