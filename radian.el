@@ -646,7 +646,7 @@ level of init.local.el."
   "Keymap for Radian commands that should be put under a prefix.
 This keymap is bound under \\[radian-keymap].")
 
-(bind-key* "M-P" radian-keymap)
+(bind-key* "<f8>" radian-keymap)
 
 (defmacro radian-bind-key (key-name command &optional predicate)
   "Bind a key in `radian-keymap'.
@@ -1800,6 +1800,7 @@ invocation will kill the newline."
     (kill-ring-save (point)
                     (line-end-position))))
 (bind-key "s-w" #'copy-whole-line)
+(bind-key "M-W" #'ffap-copy-string-as-kill)
 
 ;; Improved zap-to-char function
 ;; Let's you select to which character should it kill
@@ -4915,24 +4916,9 @@ Instead, display simply a flat colored region in the fringe."
 ;; Package `rg' just provides an interactive command `rg' to run the
 ;; search tool of the same name.
 (use-package rg
-  :bind* (("C-c k" . #'radian-rg)
-          ("C-c K" . #'mario-rg))
+  :bind (("M-s R" . #'rg))
   :config
-
-  (defun radian-rg (&optional only-current-type)
-    "Search for string in current project.
-With ONLY-CURRENT-TYPE non-nil, or interactively with prefix
-argument, search only in files matching current type."
-    (interactive "P")
-    (rg-run (rg-read-pattern nil)
-            (if only-current-type (car (rg-default-alias)) "*")
-            (rg-project-root buffer-file-name)))
-  (defun mario-rg ()
-    "Search for string recursively in current directory."
-    (interactive)
-    (rg-run (rg-read-pattern nil)
-            "all"
-            default-directory)))
+  (rg-enable-default-bindings))
 
 ;;;; Internet applications
 
