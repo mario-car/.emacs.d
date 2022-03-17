@@ -1103,6 +1103,23 @@ ourselves."
 (use-feature ibuffer
   :bind (([remap list-buffers] . #'ibuffer)))
 
+(use-package emacs
+  :config
+  (defun display-buffer-2-windows (buffer alist)
+    "If only one window is available split it and display BUFFER there.
+ALIST is the option channel for display actions (see `display-buffer')."
+    (when (eq (length (window-list nil 'no-minibuf)) 1)
+      (display-buffer--maybe-pop-up-window buffer alist)))
+
+  (setq display-buffer-base-action
+        '((display-buffer--maybe-same-window
+           display-buffer-reuse-window
+           display-buffer--maybe-pop-up-frame
+           display-buffer-2-windows
+           display-buffer-in-previous-window
+           display-buffer-use-some-window
+           display-buffer-pop-up-frame))))
+
 ;;; Finding files
 
 ;; Follow symlinks when opening files. This has the concrete impact,
