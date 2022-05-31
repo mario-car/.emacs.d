@@ -1059,6 +1059,8 @@ ourselves."
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
+(use-package consult-projectile
+  :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master"))
 
 
 ;;; Window management
