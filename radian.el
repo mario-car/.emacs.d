@@ -1166,12 +1166,14 @@ ALIST is the option channel for display actions (see `display-buffer')."
   ;; IDO.
   (setq projectile-completion-system 'default)
 
-  ;; When switching projects, give the option to choose what to do.
-  ;; This is a way better interface than having to remember ahead of
-  ;; time to use a prefix argument on `projectile-switch-project'
-  ;; (because, and please be honest here, when was the last time you
-  ;; actually remembered to do that?).
-  (setq projectile-switch-project-action 'projectile-commander)
+  ;; When switching projects, open last edited buffer. If it's a new
+  ;; project, then find-file.
+  (defun smart-switch-project ()
+    "Open latest edited buffer when switched the  exist project, find files when switched to a new project."
+    (if  (null (projectile-project-buffer-files ))
+        (projectile-find-file)
+      (switch-to-buffer (get-buffer (car (projectile-project-buffer-files))))))
+  (setq projectile-switch-project-action 'smart-switch-project)
 
   (def-projectile-commander-method ?\C-m
     "Find file in project."
