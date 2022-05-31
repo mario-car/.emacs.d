@@ -1059,10 +1059,6 @@ ourselves."
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-(use-package consult-projectile
-  :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master"))
-
-
 ;;; Window management
 
 ;; I hardly ever want to to kill buffer other then the one I'm in when
@@ -1190,6 +1186,11 @@ ALIST is the option channel for display actions (see `display-buffer')."
     (bind-key key #'projectile-replace-regexp projectile-command-map))
 
   :blackout t)
+
+(use-package consult-projectile
+  :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master")
+  :bind ("C-c P" . consult-projectile))
+
 
 (defvar radian--dirs-to-delete nil
   "List of directories to try to delete when killing buffer.
