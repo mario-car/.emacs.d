@@ -3820,6 +3820,8 @@ This function calls `json-mode--update-auto-mode' to change the
 ;; Package `yaml-mode' provides a major mode for YAML.
 (use-package yaml-mode)
 
+;; When the lines in a buffer are so long that performance could suffer to an unacceptable degree, we say “so long”2 to the buffer’s major mode
+(global-so-long-mode 1)
 ;;; Introspection
 ;;;; Help
 
