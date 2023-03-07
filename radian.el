@@ -900,19 +900,16 @@ ourselves."
         (setq input (car result))))
     input))
 
-;; Package `selectrum' is an incremental completion and narrowing
-;; framework. Like Ivy and Helm, which it improves on, Selectrum
+;; Package `vertico' is an incremental completion and narrowing
+;; framework. Like Ivy and Helm, which it improves on, Vertico
 ;; provides a user interface for choosing from a list of options by
 ;; typing a query to narrow the list, and then selecting one of the
 ;; remaining candidates. This offers a significant improvement over
 ;; the default Emacs interface for candidate selection.
-(use-package selectrum
-  :straight (:host github :repo "radian-software/selectrum")
-  :defer t
-  :init
-
-  ;; This doesn't actually load Selectrum.
-  (selectrum-mode +1))
+(use-package vertico
+  :demand t
+  :config
+  (vertico-mode +1))
 
 ;; Package `prescient' is a library for intelligent sorting and
 ;; filtering in various contexts.
@@ -925,17 +922,6 @@ ourselves."
   ;; The default settings seem a little forgetful to me. Let's try
   ;; this out.
   (setq prescient-history-length 1000))
-
-;; Package `selectrum-prescient' provides intelligent sorting and
-;; filtering for candidates in Selectrum menus.
-(use-package selectrum-prescient
-  :straight (:host github :repo "radian-software/prescient.el"
-                   :files ("selectrum-prescient.el"))
-  :demand t
-  :after selectrum
-  :config
-
-  (selectrum-prescient-mode +1))
 
 ;; Example configuration for Consult
 (use-package consult
@@ -1201,7 +1187,7 @@ ALIST is the option channel for display actions (see `display-buffer')."
   :bind-keymap* (("C-c p" . projectile-command-map))
   :config
 
-  ;; Use Selectrum (via `completing-read') for Projectile instead of
+  ;; Use Vertico (via `completing-read') for Projectile instead of
   ;; IDO.
   (setq projectile-completion-system 'default)
 
@@ -2837,7 +2823,7 @@ order."
 
   ;; When there are multiple options for where a symbol might be
   ;; defined, use the default `completing-read' mechanism to decide
-  ;; between them (i.e., delegate to Selectrum) rather than using the
+  ;; between them (i.e., delegate to Vertico) rather than using the
   ;; janky built-in `xref' thingie.
   (when (and
          (boundp 'xref-show-definitions-function)
@@ -5271,7 +5257,7 @@ This is passed to `set-frame-font'."
 (setq echo-keystrokes 1e-6)
 
 ;; Don't suggest shorter ways to type commands in M-x, since they
-;; don't apply when using Selectrum.
+;; don't apply when using Vertico.
 (setq suggest-key-bindings 0)
 
 ;; Don't blink the cursor on the opening paren when you insert a
@@ -5443,21 +5429,6 @@ spaces."
   ;; load-time `require' invocation, as well as the compile-time
   ;; one.
   (require 'zerodark-theme)
-
-  (let ((background-purple (if (true-color-p) "#48384c" "#5f5f5f"))
-        (class '((class color) (min-colors 89)))
-        (green (if (true-color-p) "#98be65" "#87af5f"))
-        (orange (if (true-color-p) "#da8548" "#d7875f"))
-        (purple (if (true-color-p) "#c678dd" "#d787d7")))
-    (custom-theme-set-faces
-     'zerodark
-     `(selectrum-current-candidate
-       ((,class (:background
-                 ,background-purple
-                 :weight bold
-                 :foreground ,purple))))
-     `(selectrum-primary-highlight ((,class (:foreground ,orange))))
-     `(selectrum-secondary-highlight ((,class (:foreground ,green))))))
 
       (dolist (face '(outline-1
                     outline-2
