@@ -43,11 +43,48 @@
 
 ;;; Define utility functions and variables
 
+(defcustom radian-org-enable-contrib nil
+  "Non-nil means to make Org contrib modules available.
+This has to be set at the beginning of init, i.e. in the top
+level of init.local.el."
+  :type 'boolean)
+
+(defcustom radian-color-theme-enable t
+  "Non-nil means to load the default Radian color theme.
+Set this to nil if you wish to load a different color theme in
+your local configuration."
+  :type 'boolean)
+
+(make-obsolete-variable 'radian-org-enable-contrib
+                        'radian-disabled-packages
+                        nil)
+(make-obsolete-variable 'radian-color-theme-enable
+                        'radian-disabled-packages
+                        nil)
+
+
+(defvar radian-disabled-packages nil
+  "List of packages that Radian should not load.
+Radian always loads the packages `use-package', `straight',
+`blackout', `bind-key' and `el-patch' even if they are members of
+this list.")
+
+(unless radian-color-theme-enable
+  (add-to-list 'radian-disabled-packages
+               'zerodark-theme))
+(unless radian-org-enable-contrib
+  (add-to-list 'radian-disabled-packages
+               'org-plus-contrib))
+
 (defvar radian-directory (file-name-directory
                           (directory-file-name
                            (file-name-directory
                             radian-lib-file)))
   "Path to the Radian Git repository.")
+
+(defmacro radian-enabled-p (package)
+  "Return nil if PACKAGE should not be loaded by Radian."
+  `(not (memq ',package radian-disabled-packages)))
 
 (defmacro radian-protect-macros (&rest body)
   "Eval BODY, protecting macros from incorrect expansion.
@@ -539,13 +576,31 @@ binding the variable dynamically over the entire init-file."
 ;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
 (setq use-package-always-defer t)
 
+(defmacro radian-use-package (name &rest args)
+  "Like `use-package', but enabled only if the package is not in
+`radian-exclude-packages'. NAME and ARGS are as in `use-package'."
+  (declare (indent 1))
+  `(if (radian-enabled-p ,name)
+       (use-package ,name ,@args)
+     (let* ((melpa-recipe (plist-get ',args ':straight))
+            (non-nil-straight (not (and (plist-member ',args ':straight)
+                                        (null melpa-recipe)))))
+       (when (or (and straight-use-package-by-default
+                      non-nil-straight)
+                 non-nil-straight)
+         (straight-register-package
+          (if melpa-recipe
+              ',name
+            (cons ',name melpa-recipe)))))))
+
 (defmacro use-feature (name &rest args)
-  "Like `use-package', but with `straight-use-package-by-default' disabled.
+  "Like `radian-use-package', but with `straight-use-package-by-default' disabled.
 NAME and ARGS are as in `use-package'."
   (declare (indent defun))
-  `(use-package ,name
-     :straight nil
-     ,@args))
+  `(when (radian-enabled-p ,name)
+     (use-package ,name
+       :straight nil
+       ,@args)))
 
 (defun radian--remove-sharp-quotes (form)
   "Remove sharp quotes in all sub-forms of FORM."
@@ -609,15 +664,9 @@ nice.)"
 (straight-register-package 'org)
 (straight-register-package 'org-contrib)
 
-(defcustom radian-org-enable-contrib nil
-  "Non-nil means to make Org contrib modules available.
-This has to be set at the beginning of init, i.e. in the top
-level of init.local.el."
-  :type 'boolean)
-
-(if radian-org-enable-contrib
-    (straight-use-package 'org-contrib)
-  (straight-use-package 'org))
+(if (radian-enabled-p org-plus-contrib)
+    (radian-use-package org-plus-contrib)
+  (radian-use-package org))
 
 ;;; el-patch
 
@@ -2798,8 +2847,30 @@ order."
 ;; be clever, so it "just works" instantly for dozens of languages
 ;; with zero configuration.
 (use-package dumb-jump
-  :config
+   :init/el-patch
 
+  (defvar dumb-jump-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "C-M-g") 'dumb-jump-go)
+      (define-key map (kbd "C-M-p") 'dumb-jump-back)
+      (define-key map (kbd "C-M-q") 'dumb-jump-quick-look)
+      map))
+
+  (define-minor-mode dumb-jump-mode
+    "Minor mode for jumping to variable and function definitions"
+    :global t
+    :keymap dumb-jump-mode-map)
+
+  :init
+
+  (dumb-jump-mode +1)
+
+  :bind (:map dumb-jump-mode-map
+              ("M-Q" . #'dumb-jump-quick-look))
+  :bind* (("C-M-d" . #'dumb-jump-go-prompt)
+          ("C-x 4 g" . #'dumb-jump-go-other-window)
+          ("C-x 4 d" . #'radian-dumb-jump-go-prompt-other-window))
+  :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 80))
 
 ;;;; Display contextual metadata
@@ -5366,19 +5437,11 @@ spaces."
 
 ;;;; Color theme
 
-(defcustom radian-color-theme-enable t
-  "Non-nil means to load the default Radian color theme.
-Set this to nil if you wish to load a different color theme in
-your local configuration."
-  :type 'boolean)
-
 ;; Package `zerodark-theme' provides a good-looking color theme that
 ;; works in both windowed and tty Emacs.
-(straight-register-package
- '(zerodark-theme :host github :repo "NicolasPetton/zerodark-theme"))
-(when radian-color-theme-enable
-  (use-package zerodark-theme
-    :no-require t))
+(radian-use-package zerodark-theme
+  :straight (:host github :repo "NicolasPetton/zerodark-theme")
+  :no-require t)
 
 ;;; Closing
 
@@ -5404,34 +5467,33 @@ your local configuration."
 
 ;; Enable color theme as late as is humanly possible. This reduces
 ;; frame flashing and other artifacts during startup.
-(when radian-color-theme-enable
-  (use-feature zerodark-theme
-    :no-require t
-    :functions (true-color-p)
-    :demand t
-    :config
+(use-feature zerodark-theme
+  :no-require t
+  :functions (true-color-p)
+  :demand t
+  :config
 
     ;; Needed because `:no-require' for some reason disables the
-    ;; load-time `require' invocation, as well as the compile-time
-    ;; one.
-    (require 'zerodark-theme)
+  ;; load-time `require' invocation, as well as the compile-time
+  ;; one.
+  (require 'zerodark-theme)
 
-    (let ((background-purple (if (true-color-p) "#48384c" "#5f5f5f"))
-          (class '((class color) (min-colors 89)))
-          (green (if (true-color-p) "#98be65" "#87af5f"))
-          (orange (if (true-color-p) "#da8548" "#d7875f"))
-          (purple (if (true-color-p) "#c678dd" "#d787d7")))
-      (custom-theme-set-faces
-       'zerodark
-       `(selectrum-current-candidate
-         ((,class (:background
-                   ,background-purple
-                   :weight bold
-                   :foreground ,purple))))
-       `(selectrum-primary-highlight ((,class (:foreground ,orange))))
-       `(selectrum-secondary-highlight ((,class (:foreground ,green))))))
+  (let ((background-purple (if (true-color-p) "#48384c" "#5f5f5f"))
+        (class '((class color) (min-colors 89)))
+        (green (if (true-color-p) "#98be65" "#87af5f"))
+        (orange (if (true-color-p) "#da8548" "#d7875f"))
+        (purple (if (true-color-p) "#c678dd" "#d787d7")))
+    (custom-theme-set-faces
+     'zerodark
+     `(selectrum-current-candidate
+       ((,class (:background
+                 ,background-purple
+                 :weight bold
+                 :foreground ,purple))))
+     `(selectrum-primary-highlight ((,class (:foreground ,orange))))
+     `(selectrum-secondary-highlight ((,class (:foreground ,green))))))
 
-    (enable-theme 'zerodark)))
+  (enable-theme 'zerodark))
 
 ;; Make adjustments to color theme that was selected by Radian or
 ;; user. See <https://github.com/raxod502/radian/issues/456>.
