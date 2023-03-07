@@ -1082,10 +1082,10 @@ ourselves."
 ;; `transpose-frame', `rotate-frame-clockwise',
 ;; `rotate-frame-anticlockwise', `rotate-frame'.
 (use-package transpose-frame
-  :bind* (("C-x C-z t" . #'transpose-frame)
+  :bind* (("C-x C-z R" . #'transpose-frame)
           ("C-x C-z r" . #'rotate-frame-clockwise)
           ("C-x C-z f" . #'flip-frame)
-          ("C-x C-z g" . #'flop-frame)))
+          ("C-x C-z F" . #'flop-frame)))
 
 ;; Package `buffer-move' provides simple commands to swap Emacs
 ;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
