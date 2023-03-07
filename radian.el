@@ -3502,6 +3502,56 @@ Return either a string or nil."
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 (add-hook 'shell-mode-hook (lambda () (company-mode -1)))
 
+(with-eval-after-load "shell"
+  (defun get-tgf-job-id ()
+  "Yank first word on the line, and go to the prompt."
+  (move-beginning-of-line nil)
+  (mark-word)
+  (kill-ring-save nil nil t)
+  (end-of-buffer))
+
+(defun print-dtjob ()
+  "Print dtjob from the tgf job on current line."
+  (interactive)
+  (get-tgf-job-id)
+  (insert "dt ")
+  (yank)
+  (comint-send-input))
+
+(defun open-tgf-log ()
+  "Open tgf log on current line"
+  (interactive)
+  (get-tgf-job-id)
+  (insert "ol ")
+  (yank)
+  (comint-send-input))
+
+(defun copy-whole-string ()
+  "Copy URL at the point in shell, and open it in firefox."
+  (interactive)
+  (re-search-backward "[\n ]")
+  (forward-char 1)
+  (set-mark-command)
+  (re-search-forward "[\n ]")
+  (backward-char 1)
+  (kill-ring-save nil nil t))
+
+(define-key shell-mode-map (kbd "C-<return>") 'print-dtjob)
+(define-key shell-mode-map (kbd "S-<return>") 'open-tgf-log)
+(define-key shell-mode-map (kbd "M-W") 'copy-whole-string)
+
+;; Select JOB_ID from 'tgq' or 'tgr' output.
+;; Basically, select first word, but when used in context of TGF
+;; output, that is JOB_ID
+(fset 'jobid
+   (kmacro-lambda-form [?\C-a ?\C-  ?\M-f ?\M-w ?\C-y] 0 "%d"))
+(define-key shell-mode-map (kbd "C-x C-z s") 'jobid)
+
+;; Select whole line, and move to the end of buffer (prompt).(
+(fset 'job-select-all
+(kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w ?\M->] 0 "%d"))
+(define-key shell-mode-map (kbd "C-x C-z a") 'job-select-all))
+
 ;;;; Swift
 ;; https://developer.apple.com/swift/
 
@@ -4288,7 +4338,45 @@ This runs `org-insert-heading' with
   ;; Add it after refile
   (advice-add 'org-refile :after
 	      (lambda (&rest _)
-	        (org-save-all-org-buffers))))
+	        (org-save-all-org-buffers)))
+
+
+  ;; Custom macros for LA
+(fset 'copy-previous-analysis
+   (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\M-b ?\M-f ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-u ?\C-  ?\C-u ?\C-  ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\C-o ?\C-y ?\C-c ?\C-t ?d] 0 "%d"))
+
+
+  (define-key org-mode-map (kbd "C-x C-z a") 'copy-previous-analysis)
+
+
+  (fset 'append-analysis
+        (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\C-c ?\C-n ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\M-> ?\C-r ?\C-y return ?\C-c ?\C-n ?\C-o ?\C-y ?\M-y] 0 "%d"))
+
+  (define-key org-mode-map (kbd "C-x C-z A") 'append-analysis)
+
+
+  (fset 'goto-previous-analysis
+        (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return] 0 "%d"))
+
+  (define-key org-mode-map (kbd "C-x C-z s") 'goto-previous-analysis)
+
+  (fset 'TR
+        (kmacro-lambda-form [?\C-a escape ?\C-  ?\M-w escape ?\C-  ?\C-c ?\C-l ?h ?t ?t ?p ?s ?: ?/ ?/ ?m ?h ?w ?e ?b ?. ?e ?r ?i ?c ?s ?s ?o ?n ?. ?s ?e ?/ ?T ?R ?E ?d ?i ?t ?W ?e ?b ?/ ?f ?a ?c ?e ?s ?/ ?o ?o ?/ ?o ?b ?j ?e ?c ?t ?. ?x ?h ?t ?m ?l ?? ?e ?r ?i ?r ?e ?f ?= ?\C-y return return] 0 "%d"))
+
+  (define-key org-mode-map (kbd "C-x C-z T") 'TR)
+
+  (fset 'ticket
+        (kmacro-lambda-form [?\C-a escape ?\C-  ?\C-w ?\C-c ?\C-l ?h ?t ?t ?p ?s ?: ?/ ?/ ?e ?t ?e ?a ?m ?p ?r ?o ?j ?e ?c ?t ?. ?i ?n ?t ?e ?r ?n ?a ?l ?. ?e ?r ?i ?c ?s ?s ?o ?n ?. ?c ?o ?m ?/ ?b ?r ?o ?w ?s ?e ?/ ?P backspace ?\C-y return ?\C-y return] 0 "%d"))
+
+  (define-key org-mode-map (kbd "C-x C-z t") 'ticket)
+
+  (fset 'posijediti
+   (kmacro-lambda-form [?\C-a escape ?\C-f ?\C-f ?\C-f ?\C-f ?= ?\C-d ?\C-e ?= ?\C-n] 0 "%d"))
+
+  (define-key org-mode-map (kbd "C-x C-z p") 'posijediti))
+
+
+
 
 ;; Feature `org-indent' provides an alternative view for Org files in
 ;; which sub-headings are indented.
