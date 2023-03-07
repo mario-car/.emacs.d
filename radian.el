@@ -5257,13 +5257,10 @@ an effect for Emacs 26 or below."
 
 ;; The menu bar appears in both graphical and tty frames. Kill it.
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 
 (when (display-graphic-p)
-
-  ;; Disable unnecessary graphical elements.
-  (when (fboundp 'scroll-bar-mode)
-    (scroll-bar-mode -1))
-  (tool-bar-mode -1)
 
   ;; Prevent the cursor from blinking. Do it two ways: using the minor
   ;; mode only works during regular init, while using the variable
