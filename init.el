@@ -1,7 +1,5 @@
 ;; -*- lexical-binding: t -*-
 
-(setq debug-on-error t)
-
 ;; Radian configuration depends on 'find' program
 ;; On Windows Cygwin is required
 (when (eq system-type 'windows-nt)
