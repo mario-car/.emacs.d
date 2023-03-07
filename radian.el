@@ -580,18 +580,16 @@ binding the variable dynamically over the entire init-file."
   "Like `use-package', but enabled only if the package is not in
 `radian-exclude-packages'. NAME and ARGS are as in `use-package'."
   (declare (indent 1))
-  `(if (radian-enabled-p ,name)
-       (use-package ,name ,@args)
-     (let* ((melpa-recipe (plist-get ',args ':straight))
-            (non-nil-straight (not (and (plist-member ',args ':straight)
-                                        (null melpa-recipe)))))
-       (when (or (and straight-use-package-by-default
-                      non-nil-straight)
-                 non-nil-straight)
-         (straight-register-package
-          (if melpa-recipe
-              ',name
-            (cons ',name melpa-recipe)))))))
+  (let* ((straight (cl-loop for cur on ',args by #'cdr
+                            when (eq (car cur) :straight)
+                            collect (cadr cur)))
+         (package (cond
+                   (straight (car straight))
+                   (straight-use-package-by-default name))))
+    `(if (radian-enabled-p ,name)
+         (use-package ,name ,@args)
+       ,@(when package
+           (list `(straight-register-package ',package))))))
 
 (defmacro use-feature (name &rest args)
   "Like `radian-use-package', but with `straight-use-package-by-default' disabled.
@@ -663,10 +661,6 @@ nice.)"
 
 (straight-register-package 'org)
 (straight-register-package 'org-contrib)
-
-(if (radian-enabled-p org-plus-contrib)
-    (radian-use-package org-plus-contrib)
-  (radian-use-package org))
 
 ;;; el-patch
 
@@ -2847,29 +2841,6 @@ order."
 ;; be clever, so it "just works" instantly for dozens of languages
 ;; with zero configuration.
 (use-package dumb-jump
-   :init/el-patch
-
-  (defvar dumb-jump-mode-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "C-M-g") 'dumb-jump-go)
-      (define-key map (kbd "C-M-p") 'dumb-jump-back)
-      (define-key map (kbd "C-M-q") 'dumb-jump-quick-look)
-      map))
-
-  (define-minor-mode dumb-jump-mode
-    "Minor mode for jumping to variable and function definitions"
-    :global t
-    :keymap dumb-jump-mode-map)
-
-  :init
-
-  (dumb-jump-mode +1)
-
-  :bind (:map dumb-jump-mode-map
-              ("M-Q" . #'dumb-jump-quick-look))
-  :bind* (("C-M-d" . #'dumb-jump-go-prompt)
-          ("C-x 4 g" . #'dumb-jump-go-other-window)
-          ("C-x 4 d" . #'radian-dumb-jump-go-prompt-other-window))
   :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 80))
 
