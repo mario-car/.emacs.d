@@ -33,13 +33,13 @@
 (defgroup radian-hooks nil
   "Startup hooks for Radian Emacs."
   :group 'radian
-  :link '(url-link :tag "GitHub" "https://github.com/raxod502/radian"))
+  :link '(url-link :tag "GitHub" "https://github.com/radian-software/radian"))
 
 (defgroup radian nil
   "Customize your Radian Emacs experience."
   :prefix "radian-"
   :group 'emacs
-  :link '(url-link :tag "GitHub" "https://github.com/raxod502/radian"))
+  :link '(url-link :tag "GitHub" "https://github.com/radian-software/radian"))
 
 ;;; Define utility functions and variables
 
@@ -551,7 +551,7 @@ binding the variable dynamically over the entire init-file."
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
@@ -631,7 +631,7 @@ nice.)"
 ;; a strict superset of those provided by similar packages `diminish',
 ;; `delight', and `dim'.
 (use-package blackout
-  :straight (:host github :repo "raxod502/blackout")
+  :straight (:host github :repo "radian-software/blackout")
   :demand t)
 
 ;;;; straight.el configuration
@@ -671,7 +671,7 @@ nice.)"
 (use-package el-patch)
 
 ;; Only needed at compile time, thanks to Jon
-;; <https://github.com/raxod502/el-patch/pull/11>.
+;; <https://github.com/radian-software/el-patch/pull/11>.
 (eval-when-compile
   (require 'el-patch))
 
@@ -907,7 +907,7 @@ ourselves."
 ;; remaining candidates. This offers a significant improvement over
 ;; the default Emacs interface for candidate selection.
 (use-package selectrum
-  :straight (:host github :repo "raxod502/selectrum")
+  :straight (:host github :repo "radian-software/selectrum")
   :defer t
   :init
 
@@ -929,7 +929,7 @@ ourselves."
 ;; Package `selectrum-prescient' provides intelligent sorting and
 ;; filtering for candidates in Selectrum menus.
 (use-package selectrum-prescient
-  :straight (:host github :repo "raxod502/prescient.el"
+  :straight (:host github :repo "radian-software/prescient.el"
                    :files ("selectrum-prescient.el"))
   :demand t
   :after selectrum
@@ -2340,7 +2340,7 @@ kills the first ancestor semantic unit starting with that char."
 ;; applying code formatters asynchronously on save without moving
 ;; point or modifying the scroll position.
 (use-package apheleia
-  :straight (:host github :repo "raxod502/apheleia")
+  :straight (:host github :repo "radian-software/apheleia")
   :init
 
   (apheleia-global-mode +1)
@@ -3076,7 +3076,7 @@ was printed, and only have ElDoc display if one wasn't."
   :init
 
   ;; Here we deal with a really weird and dumb bug
-  ;; <https://github.com/raxod502/radian/issues/446>. The problem is
+  ;; <https://github.com/radian-software/radian/issues/446>. The problem is
   ;; fundamentally that CIDER wants to do some color calculations when
   ;; it's loaded, whereas in fact there's no reason to do this until
   ;; something is actually rendered.
@@ -4813,7 +4813,7 @@ disable itself. Sad."
   ;; Put the EmacSQL binary in the repository, not the build dir. That
   ;; way we don't have to recompile it every time packages get rebuilt
   ;; by straight.el. See
-  ;; <https://github.com/raxod502/straight.el/issues/274> for not
+  ;; <https://github.com/radian-software/straight.el/issues/274> for not
   ;; having to use the internal function `straight--dir'.
   (setq emacsql-sqlite-data-root (straight--repos-dir "emacsql"))
 
@@ -5457,7 +5457,7 @@ spaces."
   (enable-theme 'zerodark))
 
 ;; Make adjustments to color theme that was selected by Radian or
-;; user. See <https://github.com/raxod502/radian/issues/456>.
+;; user. See <https://github.com/radian-software/radian/issues/456>.
 (use-feature git-gutter
   :config
 
