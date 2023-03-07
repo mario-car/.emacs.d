@@ -43,38 +43,11 @@
 
 ;;; Define utility functions and variables
 
-(defcustom radian-org-enable-contrib nil
-  "Non-nil means to make Org contrib modules available.
-This has to be set at the beginning of init, i.e. in the top
-level of init.local.el."
-  :type 'boolean)
-
-(defcustom radian-color-theme-enable t
-  "Non-nil means to load the default Radian color theme.
-Set this to nil if you wish to load a different color theme in
-your local configuration."
-  :type 'boolean)
-
-(make-obsolete-variable 'radian-org-enable-contrib
-                        'radian-disabled-packages
-                        nil)
-(make-obsolete-variable 'radian-color-theme-enable
-                        'radian-disabled-packages
-                        nil)
-
-
 (defvar radian-disabled-packages nil
   "List of packages that Radian should not load.
 Radian always loads the packages `use-package', `straight',
 `blackout', `bind-key' and `el-patch' even if they are members of
 this list.")
-
-(unless radian-color-theme-enable
-  (add-to-list 'radian-disabled-packages
-               'zerodark-theme))
-(unless radian-org-enable-contrib
-  (add-to-list 'radian-disabled-packages
-               'org-plus-contrib))
 
 (defvar radian-directory (file-name-directory
                           (directory-file-name
