@@ -874,34 +874,143 @@ ourselves."
     input))
 
 ;; Package `vertico' is an incremental completion and narrowing
-;; framework. Like Ivy and Helm, which it improves on, Vertico
-;; provides a user interface for choosing from a list of options by
-;; typing a query to narrow the list, and then selecting one of the
-;; remaining candidates. This offers a significant improvement over
-;; the default Emacs interface for candidate selection.
+;; framework.
 (use-package vertico
-  :demand t
+  ;; :commands vertico-mode
+  :straight (vertico :files (:defaults "extensions/*")
+                     :includes (vertico-indexed
+                                vertico-flat
+                                vertico-grid
+                                vertico-mouse
+                                vertico-quick
+                                vertico-buffer
+                                vertico-repeat
+                                vertico-reverse
+                                vertico-directory
+                                vertico-multiform
+                                vertico-unobtrusive
+                                ))
+  :after minibuffer
+  :commands vertico-mode
+  :init (vertico-mode 1)
+  :bind (:map vertico-map
+         ("M-RET"   . nil)
+         ("M-s"     . nil)
+         ("M-i"     . vertico-insert)
+         ("C-M-n"   . vertico-next-group)
+         ("C-M-p"   . vertico-previous-group)
+         ("C-j"     . (lambda () (interactive)
+	        	(if minibuffer--require-match
+	        	    (minibuffer-complete-and-exit)
+	        	  (exit-minibuffer))))
+         ("C->"     . embark-become)
+         (">"       . embark-become)
+         ("C-<tab>"   . embark-act-with-completing-read)
+         ("C-o"     . embark-minimal-act)
+         ("C-M-o"   . embark-minimal-act-noexit)
+         ("C-*"     . embark-act-all)
+         ("M-s o"   . embark-export)
+         ("C-c C-o" . embark-export)
+         ("C-l"     . embark-export))
   :config
-  (vertico-mode +1)
+  (setq vertico-count 10
+        vertico-cycle t
+        vertico-resize t)
+  (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions))
 
-  ;; Different scroll margin
-  ;; (setq vertico-scroll-margin 0)
+(use-package vertico-multiform
+  :commands vertico-multiform-mode
+  :bind (:map vertico-map
+              ("M-q" . vertico-multiform-flat)
+              ("C-l" . my/vertico-multiform-unobtrusive)
+              ("C-M-l" . embark-export))
+  :init (vertico-multiform-mode 1)
+  :config
+  (setq vertico-multiform-categories
+         '((file)
+           (imenu buffer)
+           (consult-location buffer)
+           (consult-grep buffer)
+           (notmuch-result reverse)
+           (minor-mode reverse)
+           (reftex-label (:not unobtrusive))
+           (citar-reference reverse)
+           (xref-location reverse)
+           (history reverse)
+           (url reverse)
+           (consult-compile-error reverse)
+           (buffer flat (vertico-cycle . t))
+           (t flat)))
+   (setq vertico-multiform-commands
+         '((tab-bookmark-open reverse)
+           (dired-goto-file unobtrusive)
+           (affe-find reverse)
+           (execute-extended-command)
+           (dired-goto-file flat)
+           (consult-project-buffer flat)
+           (consult-dir-maybe reverse)
+           (consult-dir reverse)
+           (consult-flymake reverse)
+           (consult-history reverse)
+           (consult-completion-in-region reverse)
+           (consult-recoll)
+           (completion-at-point reverse)
+           (org-roam-node-find reverse)
+           (embark-completing-read-prompter reverse)
+           (embark-act-with-completing-read reverse)
+           (embark-prefix-help-command reverse)
+           (embark-bindings reverse)
+           (consult-org-heading reverse)
+           (consult-dff unobtrusive)
+           (xref-find-definitions reverse)
+           (my/eshell-previous-matching-input reverse)
+           (tmm-menubar reverse)))
 
-  ;; Show more candidates
-  ;; (setq vertico-count 20)
+   (defun my/vertico-multiform-unobtrusive ()
+     "Toggle between vertico-unobtrusive and vertico-reverse."
+     (interactive)
+     (vertico-multiform-vertical 'vertico-reverse-mode)))
 
-  ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
+(use-package vertico-quick
+  :after vertico
+  :bind (:map vertico-map
+         ("M-i" . vertico-quick-insert)
+         ("C-'" . vertico-quick-exit)
+         ("C-o" . vertico-quick-embark))
+  :config
+  (defun vertico-quick-embark (&optional arg)
+    "Embark on candidate using quick keys."
+    (interactive)
+    (when (vertico-quick-jump)
+      (embark-act arg))))
 
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
+(use-package vertico-directory
+  :hook (rfn-eshadow-update-overlay vertico-directory-tidy)
+  :after vertico
+  :bind (:map vertico-map
+         ("DEL"   . vertico-directory-delete-char)
+         ("M-DEL" . vertico-directory-delete-word)
+         ("C-w"   . vertico-directory-delete-word)
+         ("RET"   . vertico-directory-enter)))
 
-  ;; Select first candidate rather than prompt by default.
-  ;;
-  ;; https://github.com/minad/vertico/issues/272
-  ;; https://github.com/minad/vertico/issues/306
-  ;; (setq vertico-preselect 'first)
-  )
+(use-package vertico-repeat
+  :after vertico
+  :hook (minibuffer-setup . vertico-repeat-save)
+  :bind (("C-x ." . vertico-repeat)
+         ("H-."   . vertico-repeat))
+  :config
+  (use-package savehist
+    :defer
+    :config
+    (add-to-list 'savehist-additional-variables
+                 'vertico-repeat-history)))
+
+(use-package vertico-buffer
+  :after vertico
+  ;; :hook (vertico-buffer-mode . vertico-buffer-setup)
+  :config
+  (setq vertico-buffer-display-action 'display-buffer-reuse-window))
+
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
