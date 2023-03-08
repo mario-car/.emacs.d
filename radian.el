@@ -1992,27 +1992,6 @@ invocation will kill the newline."
   ;; undo information is too large to be recorded.
   (add-to-list 'warning-suppress-log-types '(undo discard-info)))
 
-;; Package `undo-tree' replaces the default Emacs undo system, with a
-;; tree-based system. In basic usage, you don't even have to think
-;; about the tree, because it acts like a conventional undo/redo
-;; system. Bindings are C-/, M-/, and C-x u.
-(use-package undo-tree
-  :demand t
-  :config
-
-  (global-undo-tree-mode +1)
-
-  (radian-defadvice radian--advice-suppress-undo-tree-buffer-modified-message
-      (undo-tree-load-history &rest args)
-    :around #'undo-tree-load-history
-    "Suppress the annoying message saying undo history could not be loaded.
-Normally, this message is printed when undo history could not be
-loaded since the file was changed outside of Emacs."
-    (let ((inhibit-message t))
-      (apply undo-tree-load-history args)))
-
-  :blackout t)
-
 ;;;; Navigation
 
 ;; Feature `subword' provides a minor mode which causes the
