@@ -914,8 +914,10 @@ ourselves."
          ("C-l"     . embark-export))
   :config
   (setq vertico-count 10
-        vertico-cycle t
         vertico-resize t)
+  (setq read-file-name-completion-ignore-case t
+        read-buffer-completion-ignore-case t
+        completion-ignore-case t)
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions))
 
 (use-package vertico-multiform
@@ -946,7 +948,6 @@ ourselves."
            (dired-goto-file unobtrusive)
            (affe-find reverse)
            (execute-extended-command)
-           (dired-goto-file flat)
            (consult-project-buffer flat)
            (consult-dir-maybe reverse)
            (consult-dir reverse)
@@ -997,25 +998,21 @@ ourselves."
   :after vertico
   :hook (minibuffer-setup . vertico-repeat-save)
   :bind (("C-x ." . vertico-repeat)
-         ("H-."   . vertico-repeat))
+         ("H-."   . vertico-repeat)))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode)
   :config
-  (use-package savehist
-    :defer
-    :config
-    (add-to-list 'savehist-additional-variables
-                 'vertico-repeat-history)))
+  (add-to-list 'savehist-additional-variables
+               'vertico-repeat-history))
 
 (use-package vertico-buffer
   :after vertico
   ;; :hook (vertico-buffer-mode . vertico-buffer-setup)
   :config
   (setq vertico-buffer-display-action 'display-buffer-reuse-window))
-
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode))
 
 ;; A few more useful configurations...
 (use-package emacs
