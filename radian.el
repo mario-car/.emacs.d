@@ -883,23 +883,67 @@ ourselves."
   :demand t
   :config
   (vertico-mode +1)
+
+  ;; Different scroll margin
+  ;; (setq vertico-scroll-margin 0)
+
+  ;; Show more candidates
+  ;; (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  ;; (setq vertico-cycle t)
+
   ;; Select first candidate rather than prompt by default.
   ;;
   ;; https://github.com/minad/vertico/issues/272
   ;; https://github.com/minad/vertico/issues/306
-  (setq vertico-preselect 'first))
+  ;; (setq vertico-preselect 'first)
+  )
 
-;; Package `prescient' is a library for intelligent sorting and
-;; filtering in various contexts.
-(use-package prescient
-  :config
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
 
-  ;; Remember usage statistics across Emacs sessions.
-  (prescient-persist-mode +1)
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-  ;; The default settings seem a little forgetful to me. Let's try
-  ;; this out.
-  (setq prescient-history-length 1000))
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+
+;; Optionally use the `orderless' completion style.
+(use-package orderless
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 
 ;; Example configuration for Consult
 (use-package consult
@@ -2751,44 +2795,12 @@ menu to disappear and then come back after `company-idle-delay'."
 
   :blackout t)
 
-;; Package `company-prescient' provides intelligent sorting and
-;; filtering for candidates in Company completions.
-(use-package company-prescient
-  :demand t
-  :after company
-  :config
-
-  ;; Use `prescient' for Company menus.
-  (company-prescient-mode +1))
-
 ;; Package `company-lsp' provides a Company backend for `lsp-mode'.
 ;; It's configured automatically by `lsp-mode'.
 (use-package company-lsp
   :init
 
-  (use-feature lsp
-    :config
-
-    (radian-defadvice radian--company-lsp-setup (&rest _)
-      :after #'lsp
-      "Disable `company-prescient' sorting by length in some contexts.
-Specifically, disable sorting by length if the LSP Company
-backend returns fuzzy-matched candidates, which implies that the
-backend has already sorted the candidates into a reasonable
-order."
-      (setq-local company-prescient-sort-length-enable
-                  (cl-dolist (w lsp--buffer-workspaces)
-                    (when (thread-first w
-                            (lsp--workspace-client)
-                            (lsp--client-server-id)
-                            (memq '(jsts-ls
-                                    mspyls
-                                    bash-ls
-                                    texlab
-                                    ts-ls
-                                    svelte-ls))
-                            (not))
-                      (cl-return t)))))))
+  (use-feature lsp))
 
 (bind-key "M-/" 'hippie-expand)
 
@@ -5085,8 +5097,7 @@ This is non-nil if `radian--advice-kill-emacs-dispatch' has called
   (defvar radian--restart-emacs-eager-hook-functions
     ;; This list contains hooks that I determined via profiling to be
     ;; slow (double-digit milliseconds).
-    '(prescient--save
-      radian--org-clock-save
+    '(radian--org-clock-save
       save-place-kill-emacs-hook)
     "List of functions on `kill-emacs-hook' which can be run eagerly.
 If actually present on `kill-emacs-hook', then these functions
@@ -5395,39 +5406,8 @@ spaces."
  1 nil
  #'radian-byte-compile)
 
-;; Enable color theme as late as is humanly possible. This reduces
-;; frame flashing and other artifacts during startup.
-(use-feature zerodark-theme
-  :no-require t
-  :functions (true-color-p)
-  :demand t
-  :config
-
-  ;; Needed because `:no-require' for some reason disables the
-  ;; load-time `require' invocation, as well as the compile-time one.
-  (require 'zerodark-theme)
-
-  (let ((background-purple (if (true-color-p) "#48384c" "#5f5f5f"))
-        (class '((class color) (min-colors 89)))
-        (green (if (true-color-p) "#98be65" "#87af5f"))
-        (orange (if (true-color-p) "#da8548" "#d7875f"))
-        (purple (if (true-color-p) "#c678dd" "#d787d7")))
-    (custom-theme-set-faces
-     'zerodark
-     `(vertico-current
-       ((,class (:background
-                 ,background-purple
-                 :weight bold
-                 :foreground ,purple))))
-     `(prescient-primary-highlight ((,class (:foreground ,orange))))
-     `(prescient-secondary-highlight ((,class (:foreground ,green)))))
-
-      (dolist (face '(outline-1
-                    outline-2
-                    outline-3))
-        (set-face-attribute face nil :height 1.0))
-
-  (enable-theme 'zerodark)))
+(use-package modus-themes)
+(load-theme 'modus-operandi t)
 
 ;; Make adjustments to color theme that was selected by Radian or
 ;; user. See <https://github.com/radian-software/radian/issues/456>.
