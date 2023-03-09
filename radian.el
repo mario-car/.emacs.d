@@ -5453,11 +5453,8 @@ spaces."
 
 ;;;; Color theme
 
-;; Package `zerodark-theme' provides a good-looking color theme that
-;; works in both windowed and tty Emacs.
-(radian-use-package zerodark-theme
-  :straight (:host github :repo "NicolasPetton/zerodark-theme")
-  :no-require t)
+(use-package modus-themes)
+(load-theme 'modus-operandi t)
 
 ;;; Closing
 
@@ -5480,9 +5477,6 @@ spaces."
 (run-with-idle-timer
  1 nil
  #'radian-byte-compile)
-
-(use-package modus-themes)
-(load-theme 'modus-operandi t)
 
 ;; Make adjustments to color theme that was selected by Radian or
 ;; user. See <https://github.com/radian-software/radian/issues/456>.
