@@ -21,7 +21,6 @@
 (load custom-file 'noerror 'nomessage)
 
 ;; Some basic settings
-(setq frame-title-format '("%b"))
 (setq ring-bell-function 'ignore)
 (setq use-short-answers t)
 (put 'overwrite-mode 'disabled t)
@@ -216,10 +215,6 @@ lexically bound variable by the same name, for use with
 (use-package bind-key
   :demand t)
 
-;; Search DIR recursively for files matching the globbing pattern PATTERN
-(global-set-key (kbd "C-<") 'find-name-dired)
-;; Find files in DIR that contain matches for REGEXP
-(global-set-key (kbd "C->") 'find-grep-dired)
 ;; Modern versions of Emacs provide Do-What-I-Mean versions of various
 ;; editing commands: They act on the region when the region is active,
 ;; and on an appropriate semantic unit otherwise. Replace "upcase-word"
@@ -2602,7 +2597,8 @@ Return either a string or nil."
 (add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t
                                             comint-input-ignoredups t)))
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-(add-hook 'shell-mode-hook (lambda () (company-mode -1)))
+(add-hook 'shell-mode-hook (lambda () (company-mode -1)
+                             (auto-fill-mode -1)))
 
 (with-eval-after-load "shell"
   (defun get-tgf-job-id ()
@@ -3203,96 +3199,68 @@ This runs `org-insert-heading' with
 
 ;;;;; Dired
 
-;; Dired has some trouble parsing out filenames that have e.g. leading
-;; spaces, unless the ls program used has support for Dired. GNU ls
-;; has this support, so if it is available we tell Dired (and the
-;; `list-directory' command, not that it sees much use) to use it.
-;;
-;; This is in an advice so that we can defer the PATH search until
-;; necessary.
-(radian-defadvice radian--use-gls-for-list-directory (&rest _)
-  :before #'list-directory
-  "Make Dired use GNU ls, if it is available."
-  (when (executable-find "gls")
-    (setq insert-directory-program "gls"))
-  ;; Only do the check once, for efficiency.
-  (advice-remove #'list-directory #'radian--use-gls-for-list-directory))
+
+;; Search DIR recursively for files matching the globbing pattern PATTERN
+(global-set-key (kbd "C-<") 'find-name-dired)
+;; Find files in DIR that contain matches for REGEXP
+(global-set-key (kbd "C->") 'find-grep-dired)
 
 ;; Feature `dired' provides a simplistic filesystem manager in Emacs.
-;; (use-package dired
-;;   :bind (:map dired-mode-map
-;;               ;; This binding is way nicer than ^. It's inspired by
-;;               ;; Sunrise Commander.
-;;               ("J" . #'dired-up-directory))
-;;   :bind* (("C-x w" . radian-rename-current-file))
-;;   :config
+(with-eval-after-load "dired"
 
-;;   (defun radian-rename-current-file (newname)
-;;     "Rename file visited by current buffer to NEWNAME.
-;; Interactively, prompt the user for the target filename, with
-;; completion.
+  ;; Dired has some trouble parsing out filenames that have e.g. leading
+  ;; spaces, unless the ls program used has support for Dired. GNU ls
+  ;; has this support, so if it is available we tell Dired (and the
+  ;; `list-directory' command, not that it sees much use) to use it.
+  ;;
+  ;; This is in an advice so that we can defer the PATH search until
+  ;; necessary.
+  (radian-defadvice radian--use-gls-for-list-directory (&rest _)
+    :before #'list-directory
+    "Make Dired use GNU ls, if it is available."
+    (when (executable-find "gls")
+      (setq insert-directory-program "gls"))
+    ;; Only do the check once, for efficiency.
+    (advice-remove #'list-directory #'radian--use-gls-for-list-directory))
 
-;; If NEWNAME is a directory then extend it with the basename of
-;; `buffer-file-name'. Make parent directories automatically."
-;;     (interactive
-;;      (progn
-;;        (unless buffer-file-name
-;;          (user-error "Current buffer is not visiting a file"))
-;;        (let ((newname (read-file-name "Rename to: " nil buffer-file-name)))
-;;          (when (equal (file-truename newname)
-;;                       (file-truename buffer-file-name))
-;;            (user-error "%s" "Can't rename a file to itself"))
-;;          (list newname))))
-;;     (unless buffer-file-name
-;;       (error "Current buffer is not visiting a file"))
-;;     (when (equal (file-truename newname)
-;;                  (file-truename buffer-file-name))
-;;       (error "%s: %s" "Can't rename a file to itself" newname))
-;;     (when (equal newname (file-name-as-directory newname))
-;;       (setq newname
-;;             (concat newname (file-name-nondirectory buffer-file-name))))
-;;     (make-directory (file-name-directory newname) 'parents)
-;;     ;; Passing integer as OK-IF-ALREADY-EXISTS means prompt for
-;;     ;; confirmation before overwriting. Why? Who can say...
-;;     (dired-rename-file buffer-file-name newname 0))
+  (radian-defadvice radian--advice-dired-check-for-ls-dired (&rest _)
+    :before #'dired-insert-directory
+    "Check if ls --dired is supported ahead of time, and silently.
 
-;;   (radian-defadvice radian--advice-dired-check-for-ls-dired (&rest _)
-;;     :before #'dired-insert-directory
-;;     "Check if ls --dired is supported ahead of time, and silently.
+This advice prevents Dired from printing a message if your ls
+does not support the --dired option. (We do this by performing
+the check ourselves, and refraining from printing a message in
+the problematic case.)"
+    (when (eq dired-use-ls-dired 'unspecified)
+      (setq dired-use-ls-dired
+            (eq 0 (call-process insert-directory-program
+                                nil nil nil "--dired")))))
 
-;; This advice prevents Dired from printing a message if your ls
-;; does not support the --dired option. (We do this by performing
-;; the check ourselves, and refraining from printing a message in
-;; the problematic case.)"
-;;     (when (eq dired-use-ls-dired 'unspecified)
-;;       (setq dired-use-ls-dired
-;;             (eq 0 (call-process insert-directory-program
-;;                                 nil nil nil "--dired")))))
+  (define-key dired-mode-map (kbd "J") 'dired-up-directory)
 
-;;   (add-hook 'dired-mode-hook #'radian--autorevert-silence)
+  (add-hook 'dired-mode-hook #'radian--autorevert-silence)
 
-;;   ;; Disable the prompt about whether I want to kill the Dired buffer
-;;   ;; for a deleted directory. Of course I do! It's just a Dired
-;;   ;; buffer, after all. Note that this variable, for reasons unknown
-;;   ;; to me, is defined in `dired-x', but only affects the behavior of
-;;   ;; functions defined in `dired'.
-;;   (setq dired-clean-confirm-killing-deleted-buffers nil)
+  ;; Disable the prompt about whether I want to kill the Dired buffer
+  ;; for a deleted directory. Of course I do! It's just a Dired
+  ;; buffer, after all. Note that this variable, for reasons unknown
+  ;; to me, is defined in `dired-x', but only affects the behavior of
+  ;; functions defined in `dired'.
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
 
-;;   ;; Instantly revert Dired buffers on re-visiting them, with no
-;;   ;; message. (A message is shown if insta-revert is either disabled
-;;   ;; or determined dynamically by setting this variable to a
-;;   ;; function.)
-;;   (setq dired-auto-revert-buffer t)
+  ;; Instantly revert Dired buffers on re-visiting them, with no
+  ;; message. (A message is shown if insta-revert is either disabled
+  ;; or determined dynamically by setting this variable to a
+  ;; function.)
+  (setq dired-auto-revert-buffer t)
 
-;;   ;; Commands which ask for a destination directory, such as those
-;;   ;; which copy and rename files or create links for them, try to
-;;   ;; guess the default target directory for the operation. Normally,
-;;   ;; they suggest the Dired buffer’s default directory, but if the
-;;   ;; option dired-dwim-target is non-nil, and if there is another
-;;   ;; Dired buffer displayed in some window, that other buffer’s
-;;   ;; directory is suggested instead.
-;;   (setq dired-dwim-target t))
-
+  ;; Commands which ask for a destination directory, such as those
+  ;; which copy and rename files or create links for them, try to
+  ;; guess the default target directory for the operation. Normally,
+  ;; they suggest the Dired buffer’s default directory, but if the
+  ;; option dired-dwim-target is non-nil, and if there is another
+  ;; Dired buffer displayed in some window, that other buffer’s
+  ;; directory is suggested instead.
+  (setq dired-dwim-target t))
 
 ;;;; Terminal emulator
 
