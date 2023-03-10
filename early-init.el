@@ -6,6 +6,9 @@
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
+;; Turn off the alarm bell.
+(setq ring-bell-function #'ignore)
+
 (setq frame-resize-pixelwise t
       frame-inhibit-implied-resize t)
 

@@ -3711,19 +3711,6 @@ argument."
 
 ;;; Appearance
 
-;; Make the initial frame maximized, unless using the Mac port in
-;; which case this does horrifying things that prevent you from
-;; resizing the frame.
-(unless (boundp 'mac-option-modifier)
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
-
-;; Allow you to resize frames however you want, not just in whole
-;; columns. "The 80s called, they want their user interface back"
-(setq frame-resize-pixelwise t)
-
-;; Turn off the alarm bell.
-(setq ring-bell-function #'ignore)
-
 ;; Display keystrokes in the echo area immediately, not after one
 ;; second. We can't set the delay to zero because somebody thought it
 ;; would be a good idea to have that value suppress keystroke display
