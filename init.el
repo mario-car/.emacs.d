@@ -3262,6 +3262,17 @@ the problematic case.)"
   ;; directory is suggested instead.
   (setq dired-dwim-target t))
 
+;; want dired-x loaded when I press dired-jump command
+(use-package dired-x
+  :straight nil
+  :bind (;; Bindings for jumping to the current directory in Dired.
+         ("C-x C-j" . #'dired-jump)
+         ("C-x 4 C-j" . #'dired-jump-other-window))
+  :config
+  ;; Prevent annoying "Omitted N lines" messages when auto-reverting.
+  (setq dired-omit-verbose nil))
+
+
 ;;;; Terminal emulator
 
 ;; Feature `term' provides a workable, though slow, terminal emulator
