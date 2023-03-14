@@ -21,7 +21,6 @@
 (load custom-file 'noerror 'nomessage)
 
 ;; Some basic settings
-(setq ring-bell-function 'ignore)
 (setq use-short-answers t)
 (put 'overwrite-mode 'disabled t)
 
@@ -2507,64 +2506,6 @@ Return either a string or nil."
 
   :blackout t)
 
-;; Package `ruby-electric' allows you to have Emacs insert a paired
-;; "end" when you type "do", and analogously for other paired
-;; keywords.
-(use-package ruby-electric
-  :init/el-patch
-
-  ;; We already have paired delimiter support from Smartparens.
-  ;; However, `ruby-electric' provides its own copy of this
-  ;; functionality, in a less optimal way. (In particular, typing a
-  ;; closing paren when your cursor is right before a closing paren
-  ;; will insert another paren rather than moving through the existing
-  ;; one.) Unfortunately, `ruby-electric-delimiters-alist' is defined
-  ;; as a constant, so we can't customize it by setting it to nil
-  ;; (actually, we can, but byte-compilation inserts the value
-  ;; literally at its use sites, so this does not take effect).
-  ;; Instead, we override the definition of `ruby-electric-mode-map'
-  ;; to make it ignore `ruby-electric-delimiters-alist'. Also note
-  ;; that we are actually doing this before `ruby-electric' is loaded.
-  ;; This is so that the modification will actually affect the
-  ;; definition of `ruby-electric-mode', which gets whatever value
-  ;; `ruby-electric-mode-map' happens to have at definition time. (The
-  ;; alternative is to also patch `ruby-electric-mode'.)
-
-  (defvar ruby-electric-mode-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map " " 'ruby-electric-space/return)
-      (define-key
-        map [remap delete-backward-char] 'ruby-electric-delete-backward-char)
-      (define-key map [remap newline] 'ruby-electric-space/return)
-      (define-key map [remap newline-and-indent] 'ruby-electric-space/return)
-      (define-key
-        map [remap electric-newline-and-maybe-indent]
-        'ruby-electric-space/return)
-      (define-key
-        map [remap reindent-then-newline-and-indent]
-        'ruby-electric-space/return)
-      (el-patch-remove
-        (dolist (x ruby-electric-delimiters-alist)
-          (let* ((delim   (car x))
-                 (plist   (cdr x))
-                 (name    (plist-get plist :name))
-                 (func    (plist-get plist :handler))
-                 (closing (plist-get plist :closing)))
-            (define-key map (char-to-string delim) func)
-            (if closing
-                (define-key
-                  map (char-to-string closing) 'ruby-electric-closing-char)))))
-      map)
-    (el-patch-concat
-      "Keymap used in ruby-electric-mode"
-      (el-patch-add ".\n\nThe single-character bindings have been removed.")))
-
-  :init
-
-  (add-hook 'ruby-mode #'ruby-electric-mode)
-
-  :blackout t)
-
 ;;;; Rust
 ;; https://www.rust-lang.org/
 
@@ -2647,12 +2588,6 @@ Return either a string or nil."
 (fset 'job-select-all
 (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w ?\M->] 0 "%d"))
 (define-key shell-mode-map (kbd "C-x C-z a") 'job-select-all))
-
-;;;; Swift
-;; https://developer.apple.com/swift/
-
-;; Package `swift-mode' provides a major mode for Swift code.
-(use-package swift-mode)
 
 ;;;; Web
 ;; https://developer.mozilla.org/en-US/docs/web/HTML
@@ -2836,16 +2771,6 @@ This function calls `json-mode--update-auto-mode' to change the
 (use-package ssh-config-mode
   :blackout "SSH-Config")
 
-;; Package `terraform-mode' provides major modes for Terraform
-;; configuration files.
-(use-package terraform-mode)
-
-;; Package `toml-mode' provides a major mode for TOML.
-(use-package toml-mode
-  :mode "Pipfile\\'"
-  ;; Correct the capitalization from "Toml" to "TOML".
-  :blackout "TOML")
-
 ;; Package `yaml-mode' provides a major mode for YAML.
 (use-package yaml-mode)
 
@@ -2909,9 +2834,6 @@ Otherwise, it only happens when looking up variables, for some
 bizarre reason."
     (when (member (file-name-extension library-name) '("c" "rs"))
       (radian-clone-emacs-source-maybe))))
-
-;;;; Custom
-
 
 ;;;; Emacs Lisp development
 
