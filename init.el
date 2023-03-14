@@ -3635,14 +3635,6 @@ Emacs...\". Emacs suggests setting
 other people using your configuration will still get to see this
 spam. This advice, however, inhibits the message for everyone.")
 
-;; Disable the *About GNU Emacs* buffer at startup, and go straight
-;; for the scratch buffer.
-(setq inhibit-startup-screen t)
-
-;; Remove the initial *scratch* message. Start with a blank screen, we
-;; know what we're doing.
-(setq initial-scratch-message nil)
-
 ;;; Miscellaneous
 
 ;; Enable all disabled commands.
