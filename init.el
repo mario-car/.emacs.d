@@ -3035,6 +3035,9 @@ This runs `org-insert-heading' with
   ;; sparse tree.
   (setq org-highlight-sparse-tree-matches nil)
 
+  ;; Default org directory
+  (setq org-agenda-files '("~/org/"))
+
   ;; Set todo keywords
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DOING(i)" "HANGUP(h)" "|" "DONE(d)" "CANCEL(c)")
