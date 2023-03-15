@@ -3035,6 +3035,15 @@ This runs `org-insert-heading' with
   ;; Default org directory
   (setq org-agenda-files '("~/org/"))
 
+  ;; Specific files to show for custom agenda view
+  (setq org-agenda-custom-commands
+        '(("n" "Agenda and all TODOs"
+           ((agenda "" nil)
+            (todo "TODO|DOING"
+                  ((org-agenda-files
+                    '("~/org/tasklist.org" "~/org/SP.org")))))
+           nil)))
+
   ;; Set todo keywords
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DOING(i)" "HANGUP(h)" "|" "DONE(d)" "CANCEL(c)")
