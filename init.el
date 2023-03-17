@@ -2534,7 +2534,8 @@ Return either a string or nil."
                                             comint-input-ignoredups t)))
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 (add-hook 'shell-mode-hook (lambda () (company-mode -1)
-                             (auto-fill-mode -1)))
+                             (auto-fill-mode -1)
+                             (abbrev-mode 1)))
 
 (with-eval-after-load "shell"
   (defun get-tgf-job-id ()
