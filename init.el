@@ -3035,6 +3035,9 @@ This runs `org-insert-heading' with
   ;; Default org directory
   (setq org-agenda-files '("~/org/"))
 
+  ;; Hide blocked tasks in the agenda view.
+  (setq org-agenda-dim-blocked-tasks 'invisible)
+
   ;; Specific files to show for custom agenda view
   (setq org-agenda-custom-commands
         '(("n" "Agenda and all TODOs"
