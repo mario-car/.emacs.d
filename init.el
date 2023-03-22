@@ -233,7 +233,9 @@ lexically bound variable by the same name, for use with
   ;; define key sequence
   (define-prefix-command 'my-keymap)
   (global-set-key (kbd "C-z" ) my-keymap )
-  (define-key my-keymap (kbd "t s") 'shell)
+  (define-key my-keymap (kbd "t s") '(lambda () (interactive) (shell)
+                                       (delete-other-windows)
+                                       (end-of-buffer)))
   ; populate with personal keybinding sequences
   )
 
