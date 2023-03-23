@@ -347,7 +347,7 @@ lexically bound variable by the same name, for use with
   :init (vertico-multiform-mode 1)
   :config
   (setq vertico-multiform-categories
-         '((file)
+         '((file reverse)
            (imenu buffer)
            (consult-location buffer)
            (consult-grep buffer)
@@ -360,7 +360,7 @@ lexically bound variable by the same name, for use with
            (url reverse)
            (consult-compile-error reverse)
            (buffer flat (vertico-cycle . t))
-           (t flat)))
+           (t reverse)))
    (setq vertico-multiform-commands
          '((tab-bookmark-open reverse)
            (dired-goto-file unobtrusive)
