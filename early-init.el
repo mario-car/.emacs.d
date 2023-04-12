@@ -18,12 +18,17 @@
       inhibit-startup-echo-area-message user-login-name ; read the docstring
       inhibit-startup-buffer-menu t)
 
-;; Initialise installed packages
-(setq package-enable-at-startup nil)
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-(defvar package-quickstart)
+;; Performance tweaking for modern machines
+;; Disable frequency of GC. This helps performance both during init
+;; and after init. Value is in bytes so this is 100MB, as suggested in
+;; <https://github.com/emacs-lsp/lsp-mode#performance>.
+(setq gc-cons-threshold (* 100 1024 1024))
+(setq read-process-output-max (* 1024 1024))
 
-;; Allow loading from the package cache
-(setq package-quickstart t)
-
-(setq native-comp-async-report-warnings-errors 'silent) ; emacs28 with native compilation
+;; Better default modes
+(electric-pair-mode t)
+(show-paren-mode 1)
+(recentf-mode t)
