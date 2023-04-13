@@ -2,8 +2,8 @@
 ;; On Linux, F20 is automatically interpreted as "Super" modifier key.
 ;; This hack is only needed on MS Windows
 (when (eq system-type 'windows-nt)
-  (global-set-key (kbd "<f20>") nil) ;; bound to clipboard-kill-region by default
-  (define-key function-key-map (kbd "<f20>") 'event-apply-super-modifier)
+  (keymap-global-set "<f20>" nil) ;; bound to clipboard-kill-region by default
+  (keymap-set function-key-map "<f20>" #'event-apply-super-modifier)
   (setq w32-pass-rwindow-to-system nil)
   (setq w32-lwindow-modifier 'super)
   (w32-register-hot-key [s-]))
@@ -225,10 +225,6 @@
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; (kbd "C-+")
 
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
   ;; Optionally configure a function which returns the project root directory.
   ;; There are multiple reasonable alternatives to chose from.
   ;;;; 1. project.el (project-roots)
@@ -296,11 +292,11 @@
 ;; and "downcase-word" with "upcase-dwim" and "downcase-dwim"
 ;; respectively, and you can safely eject the bindings for
 ;; "upcase-region" and "downcase-region".
-(global-set-key (kbd "M-u") 'upcase-dwim)
-(global-set-key (kbd "M-l") 'downcase-dwim)
-(global-set-key (kbd "M-c") 'capitalize-dwim)
+(keymap-global-set "M-u" #'upcase-dwim)
+(keymap-global-set "M-l" #'downcase-dwim)
+(keymap-global-set "M-c" #'capitalize-dwim)
 ;; Exchange any two non-overlapping regions in a buffer
-(global-set-key (kbd "C-x C-M-t") 'transpose-regions)
+(keymap-global-set "C-x C-M-t" #'transpose-regions)
 
 ;; Personal keymap
 ;; Replace suspend-frame which this keymap since suspend-frame is
@@ -308,8 +304,8 @@
 (progn
   ;; define key sequence
   (define-prefix-command 'my-keymap)
-  (global-set-key (kbd "C-z" ) my-keymap )
-  (define-key my-keymap (kbd "t s") '(lambda () (interactive) (shell)
+  (keymap-global-set "C-z" #'my-keymap)
+  (keymap-set my-keymap "t k" #'(lambda () (interactive) (shell)
                                        (delete-other-windows)
                                        (end-of-buffer)))
   ; populate with personal keybinding sequences
@@ -330,7 +326,7 @@
 
 ;; I hardly ever want to to kill buffer other then the one I'm in when
 ;; I call this function.
-(global-set-key [remap kill-buffer] 'kill-this-buffer)
+(keymap-global-set "C-x k" #'kill-this-buffer)
 
 ;; Enable `winner' feature which provides an undo/redo stack for windows
 (use-package winner
@@ -425,8 +421,8 @@ ALIST is the option channel for display actions (see `display-buffer')."
     (back-to-indentation)
     (kill-ring-save (point)
                     (line-end-position))))
-(global-set-key (kbd "s-w") 'copy-whole-line)
-(global-set-key (kbd "M-W") 'ffap-copy-string-as-kill)
+(keymap-global-set "s-w" #'copy-whole-line)
+(keymap-global-set "M-W" #'ffap-copy-string-as-kill)
 
 ;; Improved zap-to-char function
 ;; Let's you select to which character should it kill
@@ -437,12 +433,13 @@ ALIST is the option channel for display actions (see `display-buffer')."
 ;; try to browse documents in read-only mode for easier navigation
 (setq view-read-only t)
 (defun my-view-mode-keys ()
-  (define-key view-mode-map (kbd "N") 'View-search-last-regexp-backward)
-  (define-key view-mode-map "?" 'View-search-regexp-backward) ; Less does this.
-  (define-key view-mode-map "G" 'View-goto-line-last)
-  (define-key view-mode-map "j" 'View-scroll-line-forward)
-  (define-key view-mode-map "k" 'View-scroll-line-backward))
+  (keymap-set view-mode-map "N" #'View-search-last-regexp-backward)
+  (keymap-set view-mode-map "?" #'View-search-regexp-backward) ; Less does this.
+  (keymap-set view-mode-map "G" #'View-goto-line-last)
+  (keymap-set view-mode-map "j" #'View-scroll-line-forward)
+  (keymap-set view-mode-map "k" #'View-scroll-line-backward))
 (add-hook 'view-mode-hook 'my-view-mode-keys)
+
 
 ;; jump to character
 (use-package avy
@@ -621,7 +618,8 @@ kills the first ancestor semantic unit starting with that char."
   ;; This is bind to sh-set-indent, and I don't use this. Since at the
   ;; moment I have no use for this keybinding, and it conflicts with
   ;; my keybinding for diff package, I'll turn it off.
-  (define-key sh-mode-map "\C-c=" nil))
+  (keymap-set sh-mode-map "C-c =" nil))
+
 
 ;; shell settings
 (add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t
@@ -665,21 +663,21 @@ kills the first ancestor semantic unit starting with that char."
   (backward-char 1)
   (kill-ring-save nil nil t))
 
-(define-key shell-mode-map (kbd "C-<return>") 'print-dtjob)
-(define-key shell-mode-map (kbd "S-<return>") 'open-tgf-log)
-(define-key shell-mode-map (kbd "M-W") 'copy-whole-string)
+(keymap-set shell-mode-map "C-<return>" #'print-dtjob)
+(keymap-set shell-mode-map "S-<return>" #'open-tgf-log)
+(keymap-set shell-mode-map "M-W" #'copy-whole-string)
 
 ;; Select JOB_ID from 'tgq' or 'tgr' output.
 ;; Basically, select first word, but when used in context of TGF
 ;; output, that is JOB_ID
 (fset 'jobid
    (kmacro-lambda-form [?\C-a ?\C-  ?\M-f ?\M-w ?\C-y] 0 "%d"))
-(define-key shell-mode-map (kbd "C-x C-z s") 'jobid)
+(keymap-set shell-mode-map "C-x C-z s" #'jobid)
 
 ;; Select whole line, and move to the end of buffer (prompt).(
 (fset 'job-select-all
 (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w ?\M->] 0 "%d"))
-(define-key shell-mode-map (kbd "C-x C-z a") 'job-select-all))
+(keymap-set shell-mode-map "C-x C-z a" #'job-select-all))
 
 ;; When the lines in a buffer are so long that performance could suffer to an unacceptable degree, we say “so long”2 to the buffer’s major mode
 (global-so-long-mode 1)
@@ -818,42 +816,42 @@ kills the first ancestor semantic unit starting with that char."
    (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\M-b ?\M-f ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-u ?\C-  ?\C-u ?\C-  ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\C-o ?\C-y ?\C-c ?\C-t ?d] 0 "%d"))
 
 
-  (define-key org-mode-map (kbd "C-x C-z a") 'copy-previous-analysis)
+  (keymap-set org-mode-map "C-x C-z a" #'copy-previous-analysis)
 
 
   (fset 'append-analysis
         (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\C-c ?\C-n ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\M-> ?\C-r ?\C-y return ?\C-c ?\C-n ?\C-o ?\C-y ?\M-y] 0 "%d"))
 
-  (define-key org-mode-map (kbd "C-x C-z A") 'append-analysis)
+  (keymap-set org-mode-map "C-x C-z A" #'append-analysis)
 
 
   (fset 'goto-previous-analysis
         (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return] 0 "%d"))
 
-  (define-key org-mode-map (kbd "C-x C-z s") 'goto-previous-analysis)
+  (keymap-set org-mode-map "C-x C-z s" #'goto-previous-analysis)
 
   (fset 'TR
         (kmacro-lambda-form [?\C-a escape ?\C-  ?\M-w escape ?\C-  ?\C-c ?\C-l ?h ?t ?t ?p ?s ?: ?/ ?/ ?m ?h ?w ?e ?b ?. ?e ?r ?i ?c ?s ?s ?o ?n ?. ?s ?e ?/ ?T ?R ?E ?d ?i ?t ?W ?e ?b ?/ ?f ?a ?c ?e ?s ?/ ?o ?o ?/ ?o ?b ?j ?e ?c ?t ?. ?x ?h ?t ?m ?l ?? ?e ?r ?i ?r ?e ?f ?= ?\C-y return return] 0 "%d"))
 
-  (define-key org-mode-map (kbd "C-x C-z T") 'TR)
+  (keymap-set org-mode-map "C-x C-z T" #'TR)
 
   (fset 'ticket
         (kmacro-lambda-form [?\C-a escape ?\C-  ?\C-w ?\C-c ?\C-l ?h ?t ?t ?p ?s ?: ?/ ?/ ?e ?t ?e ?a ?m ?p ?r ?o ?j ?e ?c ?t ?. ?i ?n ?t ?e ?r ?n ?a ?l ?. ?e ?r ?i ?c ?s ?s ?o ?n ?. ?c ?o ?m ?/ ?b ?r ?o ?w ?s ?e ?/ ?P backspace ?\C-y return ?\C-y return] 0 "%d"))
 
-  (define-key org-mode-map (kbd "C-x C-z t") 'ticket)
+  (keymap-set org-mode-map "C-x C-z t" #'ticket)
 
   (fset 'posijediti
    (kmacro-lambda-form [?\C-a escape ?\C-f ?\C-f ?\C-f ?\C-f ?= ?\C-d ?\C-e ?= ?\C-n] 0 "%d"))
 
-  (define-key org-mode-map (kbd "C-x C-z p") 'posijediti))
+  (keymap-set org-mode-map "C-x C-z p" #'posijediti))
 
 (use-package dired
   :ensure nil
   :init
   ;; Search DIR recursively for files matching the globbing pattern PATTERN
-  (global-set-key (kbd "C-<") 'find-name-dired)
+  (keymap-global-set "C-<" #'find-name-dired)
   ;; Find files in DIR that contain matches for REGEXP
-  (global-set-key (kbd "C->") 'find-grep-dired)
+  (keymap-global-set "C->" #'find-grep-dired)
   :bind (:map dired-mode-map
               ("J" . dired-up-directory))
   :config
@@ -992,20 +990,21 @@ region. Equivalent to \\[set-mark-command] when
   (interactive)
   (push-mark (point) t nil)
   (message "Pushed mark to ring"))
-(global-set-key (kbd "C-`") 'push-mark-no-activate)
+(keymap-global-set "C-`" #'push-mark-no-activate)
 (defun jump-to-mark ()
   "Jumps to the local mark, respecting the 'mark-ring' order.
 This is the same as using \\[set-mark-command] with the prefix
 argument."
   (interactive)
   (set-mark-command 1))
-(global-set-key (kbd "M-`") 'jump-to-mark)
+(keymap-global-set "M-`" #'jump-to-mark)
 (defun exchange-point-and-mark-no-activate ()
   "Identical to \\[exchange-point-and-mark] but will not activate the region."
   (interactive)
   (exchange-point-and-mark)
   (deactivate-mark nil))
-(define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+(keymap-set global-map "C-x C-x" #'exchange-point-and-mark-no-activate)
+
 
 ;; cooking for pulse line
 (defun pulse-line (&rest _)
