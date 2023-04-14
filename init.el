@@ -1059,10 +1059,18 @@ argument."
 	      (message "`%s' parser was installed." lang)
 	      (sit-for 0.75)))))
 
+(use-package eglot-java
+  :bind (:map eglot-java-mode-map
+              ("C-c l n" . eglot-java-file-new)
+	      ("C-c l x" . eglot-java-run-main)
+	      ("C-c l t" . eglot-java-run-test)
+	      ("C-c l N" . eglot-java-project-new)
+	      ("C-c l T" . eglot-java-project-build-task)
+	      ("C-c l R" . eglot-java-project-build-refresh))
+  :hook (java-mode . eglot-java-mode))
 
-
-
-;; hippie-expand ?
+;; hippie-expand is dabrev-expand on steroids? 
+(keymap-global-set "M-/" #'hippie-expand)
 
 ;; (use-package eglot
 ;;   :ensure t
