@@ -625,8 +625,7 @@ kills the first ancestor semantic unit starting with that char."
 (add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t
                                             comint-input-ignoredups t)))
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-(add-hook 'shell-mode-hook (lambda () (company-mode -1)
-                             (auto-fill-mode -1)
+(add-hook 'shell-mode-hook (lambda () (auto-fill-mode -1)
                              (abbrev-mode 1)))
 
 (with-eval-after-load "shell"
