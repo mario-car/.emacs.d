@@ -230,18 +230,10 @@
   ;; Optionally configure a function which returns the project root directory.
   ;; There are multiple reasonable alternatives to chose from.
   ;;;; 1. project.el (project-roots)
-  ;; (setq consult-project-root-function
-  ;;       (lambda ()
-  ;;         (when-let (project (project-current))
-  ;;           (car (project-roots project)))))
-  ;;;; 2. projectile.el (projectile-project-root)
-  (autoload 'projectile-project-root "projectile")
-  (setq consult-project-root-function #'projectile-project-root)
-  ;;;; 3. vc.el (vc-root-dir)
-  ;; (setq consult-project-root-function #'vc-root-dir)
-  ;;;; 4. locate-dominating-file
-  ;; (setq consult-project-root-function (lambda () (locate-dominating-file "." ".git")))
-  )
+  (setq consult-project-root-function
+        (lambda ()
+          (when-let (project (project-current))
+            (car (project-roots project))))))
 
 ;; Enable richer annotations using the Marginalia package
 (use-package marginalia
@@ -388,17 +380,10 @@ ALIST is the option channel for display actions (see `display-buffer')."
 ;; your home directory.
 (setq find-file-visit-truename t)
 
-;; Package `projectile' keeps track of a "project" list, which is
-;; automatically added to as you visit Git repositories, Node.js
-;; projects, etc. It then provides commands for quickly navigating
-;; between and within these projects.
-(use-package projectile
-  :defer 1
-  :bind-keymap* (("C-c p" . projectile-command-map))
+(use-package project
+  :ensure nil
   :config
-  (projectile-mode 1))
-(use-package consult-projectile
-  :bind ("C-c P" . consult-projectile))
+  (add-to-list 'project-switch-commands '(consult-project-buffer "Project Buffers" ?b)))
 
 ;; Feature `delsel' provides an alternative behavior for certain
 ;; actions when you have a selection active. Namely: if you start
