@@ -38,6 +38,8 @@
       tab-bar-show 1			; hide tab bar when it is the only tab, and show again when additional tabs created
       repeat-mode t)
 (ffap-bindings)
+;; hippie-expand is dabrev-expand on steroids? 
+(keymap-global-set "M-/" #'hippie-expand)
 
 ;; Enable vertico
 (use-package vertico
@@ -1066,9 +1068,4 @@ argument."
 	      ("C-c l R" . eglot-java-project-build-refresh))
   :hook (java-ts-mode . eglot-java-mode))
 
-;; hippie-expand is dabrev-expand on steroids? 
-(keymap-global-set "M-/" #'hippie-expand)
 
-;; (use-package eglot
-;;   :ensure t
-;;   :hook (ruby-mode . eglot-ensure))
