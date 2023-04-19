@@ -1066,7 +1066,7 @@ argument."
 	      ("C-c l N" . eglot-java-project-new)
 	      ("C-c l T" . eglot-java-project-build-task)
 	      ("C-c l R" . eglot-java-project-build-refresh))
-  :hook (java-mode . eglot-java-mode))
+  :hook (java-ts-mode . eglot-java-mode))
 
 ;; hippie-expand is dabrev-expand on steroids? 
 (keymap-global-set "M-/" #'hippie-expand)
