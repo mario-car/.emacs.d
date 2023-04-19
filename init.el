@@ -305,7 +305,7 @@
   ;; define key sequence
   (define-prefix-command 'my-keymap)
   (keymap-global-set "C-z" #'my-keymap)
-  (keymap-set my-keymap "t k" #'(lambda () (interactive) (shell)
+  (keymap-set my-keymap "t s" #'(lambda () (interactive) (shell)
                                        (delete-other-windows)
                                        (end-of-buffer)))
   ; populate with personal keybinding sequences
