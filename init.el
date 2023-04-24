@@ -33,10 +33,12 @@
       kill-do-not-save-duplicates t
       isearch-lazy-count t
       global-auto-revert-mode t
+      global-auto-revert-non-file-buffers t ; Auto-revert all buffers, not only file-visiting buffers.
       disabled-command-function nil
       echo-keystrokes 1e-6		; display keystrokes in the echo area immediately
       tab-bar-show 1			; hide tab bar when it is the only tab, and show again when additional tabs created
-      repeat-mode t)
+      repeat-mode t
+      use-dialog-box nil)		;don't pop up UI dialogs when prompting
 (ffap-bindings)
 ;; hippie-expand is dabrev-expand on steroids? 
 (keymap-global-set "M-/" #'hippie-expand)
