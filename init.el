@@ -385,7 +385,12 @@ ALIST is the option channel for display actions (see `display-buffer')."
 (use-package project
   :ensure nil
   :config
-  (add-to-list 'project-switch-commands '(consult-project-buffer "Project Buffers" ?b)))
+  (defun my-dired-root ()
+    (interactive)
+    (dired (cdr (cdr (project-current)))))
+  (add-to-list 'project-switch-commands '(consult-project-buffer "Project Buffers" ?b))
+  (add-to-list 'project-switch-commands '(my-dired-root "my Dired" ?D))
+  (add-to-list 'project-switch-commands '(consult-ripgrep "Consult ripgrep" ?r)))
 
 ;; Feature `delsel' provides an alternative behavior for certain
 ;; actions when you have a selection active. Namely: if you start
@@ -1046,6 +1051,8 @@ argument."
 	      (sit-for 0.75)))))
 
 (use-package eglot-java
+  :init
+  (setenv "JAVA_HOME" "/usr/lib/jvm/java-17-oracle/")
   :bind (:map eglot-java-mode-map
               ("C-c l n" . eglot-java-file-new)
 	      ("C-c l x" . eglot-java-run-main)
