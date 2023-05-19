@@ -390,7 +390,8 @@ ALIST is the option channel for display actions (see `display-buffer')."
     (dired (cdr (cdr (project-current)))))
   (add-to-list 'project-switch-commands '(consult-project-buffer "Project Buffers" ?b))
   (add-to-list 'project-switch-commands '(my-dired-root "my Dired" ?D))
-  (add-to-list 'project-switch-commands '(consult-ripgrep "Consult ripgrep" ?r)))
+  (add-to-list 'project-switch-commands '(consult-ripgrep "Consult ripgrep" ?r))
+  (add-to-list 'project-switch-commands '(magit-status "Magit status" ?m)))
 
 ;; Feature `delsel' provides an alternative behavior for certain
 ;; actions when you have a selection active. Namely: if you start
