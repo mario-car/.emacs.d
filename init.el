@@ -869,7 +869,10 @@ kills the first ancestor semantic unit starting with that char."
   ;; option dired-dwim-target is non-nil, and if there is another
   ;; Dired buffer displayed in some window, that other buffer’s
   ;; directory is suggested instead.
-  (setq dired-dwim-target t))
+  (setq dired-dwim-target t)
+
+  ;; Prevent dired to open new buffer for every ensubdirectory
+  (setf dired-kill-when-opening-new-dired-buffer t))
 
 ;; Comparing files and buffers, and finding differences.
 (use-package ediff
