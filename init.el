@@ -385,11 +385,14 @@ ALIST is the option channel for display actions (see `display-buffer')."
 (use-package project
   :ensure nil
   :config
-  (defun my-dired-root ()
+  (defun my-project-root ()
     (interactive)
-    (dired (cdr (cdr (project-current)))))
+    (let ((project (project-current)))
+      (while (ignore-errors (cdr project))
+	(setq project (cdr project)))
+      (dired project)))
   (add-to-list 'project-switch-commands '(consult-project-buffer "Project Buffers" ?b))
-  (add-to-list 'project-switch-commands '(my-dired-root "my Dired" ?D))
+  (add-to-list 'project-switch-commands '(my-project-root "Dired root" ?D))
   (add-to-list 'project-switch-commands '(consult-ripgrep "Consult ripgrep" ?r))
   (add-to-list 'project-switch-commands '(magit-project-status "Magit status" ?m)))
 
