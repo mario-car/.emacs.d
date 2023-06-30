@@ -875,7 +875,10 @@ kills the first ancestor semantic unit starting with that char."
   (setq dired-dwim-target t)
 
   ;; Prevent dired to open new buffer for every ensubdirectory
-  (setf dired-kill-when-opening-new-dired-buffer t))
+  (setf dired-kill-when-opening-new-dired-buffer t)
+
+  ;; Human readable size
+  (setq dired-listing-switches "-alh"))
 
 ;; Comparing files and buffers, and finding differences.
 (use-package ediff
