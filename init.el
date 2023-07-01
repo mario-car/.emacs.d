@@ -752,6 +752,9 @@ kills the first ancestor semantic unit starting with that char."
   ;; Hide blocked tasks in the agenda view.
   (setq org-agenda-dim-blocked-tasks 'invisible)
 
+  ;; Open Org Agenda in full screen
+  (setq org-agenda-window-setup 'only-window)
+
   ;; Specific files to show for custom agenda view
   (setq org-agenda-custom-commands
         '(("n" "Agenda and all TODOs"
