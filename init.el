@@ -808,7 +808,7 @@ kills the first ancestor semantic unit starting with that char."
           ("j" "Journal" entry (file, (concat org-directory "/journal.org"))
            "*  %^{Title} %?\n%U\n%a\n" :clock-resume t)
 	  ("b" "Book" entry (file, (concat org-directory "/book.org"))
-	   "* Topic: %^{Description}  %^g %? Added: %U")))
+	   "* Topic: %^{Topic} -- Author: %^{Author} %? Added: %U")))
 
 
   ;; Custom macros for LA
