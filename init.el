@@ -715,7 +715,16 @@ kills the first ancestor semantic unit starting with that char."
               ;; other bindings of `backward-paragraph' (e.g. M-{).
               ;; Here we establish that remapping.
               ([remap backward-paragraph] . #'org-backward-paragraph)
-              ([remap forward-paragraph] . #'org-forward-paragraph))
+              ([remap forward-paragraph] . #'org-forward-paragraph)
+
+	      ("C-M-k" . org-metaup)
+	      ("C-M-j" . org-metadown)
+	      ("C-M-l" . org-metaright)
+	      ("C-M-h" . org-metaleft)
+	      ("M-J" . org-shiftdown)
+	      ("M-K" . org-shiftup)
+	      ("M-L" . org-shiftright)
+	      ("M-H" . org-shiftleft))
   :bind* (;; Add the global keybindings for accessing Org Agenda and
           ;; Org Capture that are recommended in the Org manual.
           ("C-c a" . #'org-agenda)
@@ -785,10 +794,10 @@ kills the first ancestor semantic unit starting with that char."
   ;; Refile targets
   (setq org-refile-allow-creating-parent-nodes 'confirm
         org-refile-targets (quote (("tasklist.org" :maxlevel . 3)
-                                 ("scheduled.org" :maxlevel . 3)
-                                 ("someday.org" :maxlevel . 3)
-                                 ("gtd.org" :maxlevel . 3)
-                                 ("SP.org" :maxlevel . 3)))
+                                   ("scheduled.org" :maxlevel . 3)
+                                   ("someday.org" :maxlevel . 3)
+                                   ("gtd.org" :maxlevel . 3)
+                                   ("SP.org" :maxlevel . 3)))
         org-refile-use-outline-path 'file
         org-outline-path-complete-in-steps nil)
 
@@ -797,7 +806,7 @@ kills the first ancestor semantic unit starting with that char."
 	      (lambda (&rest _)
 	        (org-save-all-org-buffers)))
 
-    ;; Capture templates
+  ;; Capture templates
   (setq org-capture-templates
         `(("i" "Idea" entry (file ,(concat org-directory "/idea.org"))
            "*  %^{Title} %?\n%U\n%a\n")
@@ -812,8 +821,8 @@ kills the first ancestor semantic unit starting with that char."
 
 
   ;; Custom macros for LA
-(fset 'copy-previous-analysis
-   (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\M-b ?\M-f ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-u ?\C-  ?\C-u ?\C-  ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\C-o ?\C-y ?\C-c ?\C-t ?d] 0 "%d"))
+  (fset 'copy-previous-analysis
+	(kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\M-b ?\M-f ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-u ?\C-  ?\C-u ?\C-  ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\C-o ?\C-y ?\C-c ?\C-t ?d] 0 "%d"))
 
 
   (keymap-set org-mode-map "C-x C-z a" #'copy-previous-analysis)
@@ -841,7 +850,7 @@ kills the first ancestor semantic unit starting with that char."
   (keymap-set org-mode-map "C-x C-z t" #'ticket)
 
   (fset 'posijediti
-   (kmacro-lambda-form [?\C-a escape ?\C-f ?\C-f ?\C-f ?\C-f ?= ?\C-d ?\C-e ?= ?\C-n] 0 "%d"))
+	(kmacro-lambda-form [?\C-a escape ?\C-f ?\C-f ?\C-f ?\C-f ?= ?\C-d ?\C-e ?= ?\C-n] 0 "%d"))
 
   (keymap-set org-mode-map "C-x C-z p" #'posijediti))
 
