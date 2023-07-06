@@ -947,7 +947,10 @@ kills the first ancestor semantic unit starting with that char."
     '("-a" "Autostash" "--autostash"))
 
   (transient-append-suffix 'magit-fetch "-t"
-    '("-u" "Unshallow" "--unshallow")))
+    '("-u" "Unshallow" "--unshallow"))
+
+  ;; Show word-granularity differences within diff hunks
+  (setq magit-diff-refine-hunk t))
 
 ;; Package `git-gutter' adds a column to the left-hand side of each
 ;; window, showing which lines have been added, removed, or modified
