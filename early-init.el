@@ -32,3 +32,4 @@
 (electric-pair-mode t)
 (show-paren-mode 1)
 (recentf-mode t)
+(savehist-mode t)
