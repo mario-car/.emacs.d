@@ -16,7 +16,8 @@
       inhibit-splash-screen t
       inhibit-startup-screen t
       inhibit-startup-echo-area-message user-login-name ; read the docstring
-      inhibit-startup-buffer-menu t)
+      inhibit-startup-buffer-menu t
+      make-pointer-invisible t)
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
