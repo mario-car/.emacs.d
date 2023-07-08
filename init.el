@@ -736,9 +736,6 @@ kills the first ancestor semantic unit starting with that char."
   ;; end of the current entry.
   (setq org-insert-heading-respect-content t)
 
-  ;; Show headlines but not content by default.
-  (setq org-startup-folded 'content)
-
   ;; Make C-a, C-e, and C-k smarter with regard to headline tags.
   (setq org-special-ctrl-a/e t)
   (setq org-special-ctrl-k t)
