@@ -566,7 +566,13 @@ kills the first ancestor semantic unit starting with that char."
     (interactive)
     (change-outer* t nil)))
 
-(use-package yasnippet)
+(use-package yasnippet
+  :hook (prog-mode . yas-minor-mode))
+
+;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
+(use-package yasnippet-snippets
+  :after (yasnippet))
+
 
 (use-package corfu
   ;; Optional customizations
