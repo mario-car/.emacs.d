@@ -32,16 +32,26 @@
       sentence-end-double-space nil
       kill-do-not-save-duplicates t
       isearch-lazy-count t
-      global-auto-revert-mode t
       global-auto-revert-non-file-buffers t ; Auto-revert all buffers, not only file-visiting buffers.
       disabled-command-function nil
       echo-keystrokes 1e-6		; display keystrokes in the echo area immediately
       tab-bar-show 1			; hide tab bar when it is the only tab, and show again when additional tabs created
       repeat-mode t
+      indent-tabs-mode nil              ; use spaces instead of tabs
       use-dialog-box nil)		;don't pop up UI dialogs when prompting
 (ffap-bindings)
+;; Revert buffers when the underlying file has changed
+(global-auto-revert-mode 1)
+
 ;; hippie-expand is dabrev-expand on steroids? 
 (keymap-global-set "M-/" #'hippie-expand)
+
+;; Make scrolling less stuttered
+(setq auto-window-vscroll nil)
+(customize-set-variable 'fast-but-imprecise-scrolling t)
+(customize-set-variable 'scroll-conservatively 101)
+(customize-set-variable 'scroll-margin 0)
+(customize-set-variable 'scroll-preserve-screen-position t)
 
 ;; Enable vertico
 (use-package vertico
@@ -733,6 +743,9 @@ kills the first ancestor semantic unit starting with that char."
 (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w ?\M->] 0 "%d"))
 (keymap-set shell-mode-map "C-x C-z a" #'job-select-all))
 
+;; Better support for files with long lines
+(setq-default bidi-paragraph-direction 'left-to-right)
+(setq-default bidi-inhibit-bpa t)
 ;; When the lines in a buffer are so long that performance could suffer to an unacceptable degree, we say “so long”2 to the buffer’s major mode
 (global-so-long-mode 1)
 
