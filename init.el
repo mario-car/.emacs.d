@@ -676,8 +676,11 @@ kills the first ancestor semantic unit starting with that char."
 ;; be clever, so it "just works" instantly for dozens of languages
 ;; with zero configuration.
 (use-package dumb-jump
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 80)
   :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 80))
+  ;; use completion system instead of popup window
+  (setq xref-show-definitions-function #'xref-show-definitions-completing-read))
 
 (use-package sh-script
   :config
