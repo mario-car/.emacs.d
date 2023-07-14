@@ -40,6 +40,9 @@
       indent-tabs-mode nil              ; use spaces instead of tabs
       whitespace-action '(cleanup auto-cleanup) ; cleanup whitespace
       use-dialog-box nil)		;don't pop up UI dialogs when prompting
+;; Load custom.el
+(load custom-file)
+
 (ffap-bindings)
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
