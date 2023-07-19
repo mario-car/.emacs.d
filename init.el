@@ -36,7 +36,6 @@
       disabled-command-function nil
       echo-keystrokes 1e-6		; display keystrokes in the echo area immediately
       tab-bar-show 1			; hide tab bar when it is the only tab, and show again when additional tabs created
-      repeat-mode t
       indent-tabs-mode nil              ; use spaces instead of tabs
       whitespace-action '(cleanup auto-cleanup) ; cleanup whitespace
       use-dialog-box nil)		;don't pop up UI dialogs when prompting
@@ -46,6 +45,8 @@
 (ffap-bindings)
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
+;; Turn on repeat mode
+(repeat-mode)
 
 ;; hippie-expand is dabrev-expand on steroids? 
 (keymap-global-set "M-/" #'hippie-expand)
