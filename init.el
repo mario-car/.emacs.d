@@ -582,8 +582,12 @@ kills the first ancestor semantic unit starting with that char."
     (change-outer* t nil)))
 
 (use-package yasnippet
-  :hook (prog-mode . yas-minor-mode))
-
+  :hook (prog-mode . yas-minor-mode)
+  :bind (:map yas-minor-mode-map
+	      ("TAB" . nil)
+	      ("<tab>" . nil)
+	      ("C-x f" . yas-expand)))
+					
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
 (use-package yasnippet-snippets
   :after (yasnippet))
