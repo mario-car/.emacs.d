@@ -640,13 +640,15 @@ kills the first ancestor semantic unit starting with that char."
 
 
 (use-package corfu
+  :bind (:map corfu-map
+	      ("RET"   . nil))
   ;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  ;; (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-separator ?\s)          ;; Orderless field separator
   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-quit-no-match 'separator)  ;; Don't quit if there is `corfu-separator' inserted
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
@@ -1200,6 +1202,13 @@ argument."
 	      (treesit-install-language-grammar lang)
 	      (message "`%s' parser was installed." lang)
 	      (sit-for 0.75)))))
+
+(use-package eglot
+  :config
+  (advice-add 'eglot-completion-at-point :around  #'cape-wrap-buster)
+
+  (setq completion-category-overrides '((eglot (styles orderless))))
+  (setq completion-category-defaults nil))
 
 (use-package eglot-java
   :init
