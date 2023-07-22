@@ -391,6 +391,52 @@ ALIST is the option channel for display actions (see `display-buffer')."
   ;; when you find the file again.
   (save-place-mode +1))
 
+;; Window configuration for special windows.
+;; This section inspired by the article "Demystifying Emacs’s Window
+;; Manager" found here:
+;; https://www.masteringemacs.org/article/demystifying-emacs-window-manager
+(add-to-list 'display-buffer-alist
+             '("\\*Help\\*"
+               (display-buffer-reuse-window display-buffer-pop-up-window)))
+
+(add-to-list 'display-buffer-alist
+             '("\\*Completions\\*"
+               (display-buffer-reuse-window display-buffer-pop-up-window)
+               (inhibit-same-window . t)
+               (window-height . 10)))
+
+;; Show dictionary definition on the left
+(add-to-list 'display-buffer-alist
+             '("^\\*Dictionary\\*"
+               (display-buffer-in-side-window)
+               (side . left)
+               (window-width . 70)))
+
+;; define a key to define the word at point.
+(define-key global-map (kbd "C-d") #'dictionary-lookup-definition)
+
+;; pop up dedicated buffers in a different window.
+(customize-set-variable 'switch-to-buffer-in-dedicated-window 'pop)
+;; treat manual buffer switching (C-x b for example) the same as
+;; programmatic buffer switching.
+(customize-set-variable 'switch-to-buffer-obey-display-actions t)
+
+;; turn off forward and backward movement cycling
+(customize-set-variable 'ibuffer-movement-cycle nil)
+;; the number of hours before a buffer is considered "old" by
+;; ibuffer.
+(customize-set-variable 'ibuffer-old-time 24)
+;; prefer the more full-featured built-in ibuffer for managing
+;; buffers.
+(global-set-key [remap list-buffers] #'ibuffer-list-buffers)
+
+;; turn on spell checking, if available.
+(with-eval-after-load 'ispell
+  (when (executable-find ispell-program-name)
+    (add-hook 'text-mode-hook #'flyspell-mode)
+    (add-hook 'prog-mode-hook #'flyspell-prog-mode)))
+
+
 ;; Follow symlinks when opening files. This has the concrete impact,
 ;; for instance, that when you edit init.el with M-P e e i and then
 ;; later do C-x C-f, you will be in the Radian repository instead of
@@ -632,7 +678,8 @@ kills the first ancestor semantic unit starting with that char."
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete))
+  (setq tab-always-indent 'complete)
+  (setq completions-detailed t))
 
 ;; Corfu Extensions (Cape)
 (use-package cape
