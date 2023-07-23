@@ -412,7 +412,7 @@ ALIST is the option channel for display actions (see `display-buffer')."
                (window-width . 70)))
 
 ;; define a key to define the word at point.
-(define-key global-map (kbd "C-d") #'dictionary-lookup-definition)
+(define-key global-map (kbd "C-c d") #'dictionary-lookup-definition)
 
 ;; pop up dedicated buffers in a different window.
 (customize-set-variable 'switch-to-buffer-in-dedicated-window 'pop)
