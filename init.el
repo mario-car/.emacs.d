@@ -14,7 +14,6 @@
   (setq w32-pass-apps-to-system nil)
   (setq w32-apps-modifier 'hyper)) ; Menu/App key
 
-(load-theme 'leuven-dark)
 (setq use-package-always-ensure t)
 (setq use-package-always-defer t)
 
@@ -1160,9 +1159,9 @@ argument."
                                      recenter-top-bottom other-window))
   (advice-add command :after #'pulse-line))
 
-;; (use-package modus-themes
-;;   :config
-;;   (load-theme 'modus-operandi t))
+(use-package modus-themes
+  :config
+  (load-theme 'modus-operandi t))
 
 ;; treesit is part of Emacs 29, but grammars still need to be downloaded and installed.
 ;; This snippet was taken from:
