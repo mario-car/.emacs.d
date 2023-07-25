@@ -60,12 +60,30 @@
     (define-key map "u" 'outline-up-heading)
     (define-key map "\C-u" 'outline-up-heading)
     map)
-  "Keymap to repeat test key sequences.  Used in `repeat-mode'.")
+  "Keymap to repeat org key sequences.  Used in `repeat-mode'.")
 (put 'org-next-visible-heading 'repeat-map 'org-repeat-map)
 (put 'org-previous-visible-heading 'repeat-map 'org-repeat-map)
 (put 'org-forward-heading-same-level 'repeat-map 'org-repeat-map)
 (put 'org-backward-heading-same-level 'repeat-map 'org-repeat-map)
 (put 'outline-up-heading 'repeat-map 'org-repeat-map)
+
+(defvar-keymap smerge-repeat-key-map
+  :doc "Keymap to repeat smerge key sequence."
+  :repeat t
+  "<" #'smerge-diff-base-upper
+  "=" #'smerge-diff-upper-lower
+  ">" #'smerge-diff-base-lower
+  "C" #'smerge-combine-with-next
+  "E" #'smerge-ediff
+  "R" #'smerge-refine
+  "RET" #'smerge-keep-current
+  "a" #'smerge-keep-all
+  "b" #'smerge-keep-base
+  "l" #'smerge-keep-lower
+  "n" #'smerge-next
+  "p" #'smerge-prev
+  "r" #'smerge-resolve
+  "u" #'smerge-keep-upper)
 
 ;; Easier to press `repeat' command
 (bind-key "<f5>" #'repeat)
@@ -385,10 +403,10 @@
 ;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
 ;; `buf-move-right'.
 (use-package buffer-move
-  :bind* (("C-x C-z k" . #'buf-move-up)
-          ("C-x C-z j" . #'buf-move-down)
-          ("C-x C-z h" . #'buf-move-left)
-          ("C-x C-z l" . #'buf-move-right)))
+  :bind* (("C-x C-z <up>" . #'buf-move-up)
+	  ("C-x C-z <down>" . #'buf-move-down)
+	  ("C-x C-z <left>" . #'buf-move-left)
+	  ("C-x C-z <right>" . #'buf-move-right)))
 
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
