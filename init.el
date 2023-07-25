@@ -374,7 +374,12 @@
   :bind* (("C-x C-z R" . #'transpose-frame)
           ("C-x C-z r" . #'rotate-frame-clockwise)
           ("C-x C-z f" . #'flip-frame)
-          ("C-x C-z F" . #'flop-frame)))
+          ("C-x C-z F" . #'flop-frame)
+	  :repeat-map transpose-frame-repeat-map
+	  ("r" . #'rotate-frame-clockwise)
+	  ("R" . #'transpose-frame)
+	  ("f" . #'flip-frame)
+	  ("F" . #'flop-frame)))
 
 ;; Package `buffer-move' provides simple commands to swap Emacs
 ;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
