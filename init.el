@@ -47,6 +47,30 @@
 ;; Turn on repeat mode
 (repeat-mode)
 
+(defvar org-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "n" 'org-next-visible-heading)
+    (define-key map "\C-n" 'org-next-visible-heading)
+    (define-key map "p" 'org-previous-visible-heading)
+    (define-key map "\C-p" 'org-previous-visible-heading)
+    (define-key map "f" 'org-forward-heading-same-level)
+    (define-key map "\C-f" 'org-forward-heading-same-level)
+    (define-key map "b" 'org-backward-heading-same-level)
+    (define-key map "\C-b" 'org-backward-heading-same-level)
+    (define-key map "u" 'outline-up-heading)
+    (define-key map "\C-u" 'outline-up-heading)
+    map)
+  "Keymap to repeat test key sequences.  Used in `repeat-mode'.")
+(put 'org-next-visible-heading 'repeat-map 'org-repeat-map)
+(put 'org-previous-visible-heading 'repeat-map 'org-repeat-map)
+(put 'org-forward-heading-same-level 'repeat-map 'org-repeat-map)
+(put 'org-backward-heading-same-level 'repeat-map 'org-repeat-map)
+(put 'outline-up-heading 'repeat-map 'org-repeat-map)
+
+;; Easier to press `repeat' command
+(bind-key "<f5>" #'repeat)
+
+
 ;; hippie-expand is dabrev-expand on steroids? 
 (keymap-global-set "M-/" #'hippie-expand)
 
@@ -321,8 +345,6 @@
   ; populate with personal keybinding sequences
   )
 
-;; Easier to press `repeat' command
-(bind-key "<f5>" #'repeat)
 ;; Maybe useful
 (bind-key "s-z" #'copy-from-above-command)
 
