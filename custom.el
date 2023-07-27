@@ -81,7 +81,7 @@
       (null-device . "/dev/null"))))
  '(max-lisp-eval-depth 48000)
  '(package-selected-packages
-   '(kind-icon consult-eglot avy-zap buffer-move cape consult-projectile corfu dumb-jump eglot-java embark-consult expand-region git-gutter google-translate helpful macrostep magit marginalia orderless rg transpose-frame vertico visual-regexp-steroids yasnippet-snippets)))
+   '(elfeed kind-icon consult-eglot avy-zap buffer-move cape consult-projectile corfu dumb-jump eglot-java embark-consult expand-region git-gutter google-translate helpful macrostep magit marginalia orderless rg transpose-frame vertico visual-regexp-steroids yasnippet-snippets)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

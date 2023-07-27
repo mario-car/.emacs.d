@@ -1261,4 +1261,13 @@ argument."
 	      ("C-c l R" . eglot-java-project-build-refresh))
   :hook (java-ts-mode . eglot-java-mode))
 
-
+(use-package elfeed
+  :bind
+  ("C-x w w" . elfeed)
+  :config
+  (setq elfeed-feeds
+	'(("http://nullprogram.com/feed/" blog emacs)
+          "http://www.50ply.com/atom.xml"  ; no autotagging
+	  "https://planet.emacslife.com/atom.xml"
+          ("http://nedroid.com/feed/" webcomic)
+	  ("https://cestlaz.github.io/rss.xml" Zamansky))))
