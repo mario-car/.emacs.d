@@ -1017,7 +1017,7 @@ kills the first ancestor semantic unit starting with that char."
   (keymap-set org-mode-map "C-x C-z t" #'ticket)
 
   (fset 'posijediti
-	(kmacro-lambda-form [?\C-a escape ?\C-f ?\C-f ?\C-f ?\C-f ?= ?\C-d ?\C-e ?= ?\C-n] 0 "%d"))
+	(kmacro-lambda-form [?\C-a escape ?\C-f ?\C-f ?\C-f ?\C-f ?= ?\C-e ?= ?\C-n] 0 "%d"))
 
   (keymap-set org-mode-map "C-x C-z p" #'posijediti))
 
