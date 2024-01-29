@@ -81,7 +81,7 @@
   "u" #'smerge-keep-upper)
 
 ;; Easier to press `repeat' command
-(bind-key "<f5>" #'repeat)
+(bind-key "<f6>" #'repeat)
 
 
 ;; hippie-expand is dabrev-expand on steroids? 
