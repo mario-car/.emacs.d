@@ -1057,7 +1057,12 @@ kills the first ancestor semantic unit starting with that char."
   (setf dired-kill-when-opening-new-dired-buffer t)
 
   ;; Human readable size
-  (setq dired-listing-switches "-alh"))
+  (setq dired-listing-switches "-alh")
+
+  (setq dired-recursive-copies 'always
+	dired-recursive-deletes 'always
+	dired-make-directory-clickable t
+	dired-mouse-drag-files t))
 
 ;; Comparing files and buffers, and finding differences.
 (use-package ediff
