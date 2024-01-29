@@ -31,6 +31,7 @@
       sentence-end-double-space nil
       kill-do-not-save-duplicates t
       isearch-lazy-count t
+      search-whitespace-regexp ".*?"
       global-auto-revert-non-file-buffers t ; Auto-revert all buffers, not only file-visiting buffers.
       disabled-command-function nil
       echo-keystrokes 1e-6		; display keystrokes in the echo area immediately
