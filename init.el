@@ -17,6 +17,14 @@
 (setq use-package-always-ensure t)
 (setq use-package-always-defer t)
 
+;; Enable use-package chords
+(use-package use-package-chords
+  :demand t
+  :init (key-chord-mode 1))
+(use-package emacs
+  :chords (("xx" . er/expand-region)))
+
+
 ;; Better default settings
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward
