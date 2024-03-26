@@ -137,7 +137,19 @@
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
-  (savehist-mode))
+  (savehist-mode)
+  :config
+  (setq savehist-additional-variables '(register-alist))
+  (defun clear-nonstrings-register-alist ()
+    "`savehist' cannot save non-string registers.
+If there are non string registers, like point in a buffer, then no registers are saved on exit.
+They are actually overwritten and erased."
+    (dolist (reg-alist register-alist)
+      (let ((key (car reg-alist))
+	    (value (cdr reg-alist)))
+	(unless (stringp value)
+	  (set-register key "nil")))))
+  :hook (savehist-save . clear-nonstrings-register-alist))
 
 ;; A few more useful configurations...
 (use-package emacs
