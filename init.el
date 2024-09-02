@@ -547,19 +547,6 @@ ALIST is the option channel for display actions (see `display-buffer')."
 
   (delete-selection-mode +1))
 
-;; Custom function to copy whole line.
-;; It will copy from the first character on the line until the end of
-;; line. It will ignore whitespace at the beginning of line.
-(defun copy-whole-line ()
-  "Copy whole line"
-  (interactive)
-  (save-excursion
-    (back-to-indentation)
-    (kill-ring-save (point)
-                    (line-end-position))))
-(keymap-global-set "s-w" #'copy-whole-line)
-(keymap-global-set "M-W" #'ffap-copy-string-as-kill)
-
 ;; Improved zap-to-char function
 ;; Let's you select to which character should it kill
 (use-package avy-zap
@@ -1314,3 +1301,110 @@ argument."
 	  "https://planet.emacslife.com/atom.xml"
           ("http://nedroid.com/feed/" webcomic)
 	  ("https://cestlaz.github.io/rss.xml" Zamansky))))
+
+(use-package emacs
+  :bind
+  ("M-W" . ffap-copy-string-as-kill)
+  ("s-w" . copy-whole-line)
+  ("s-b" . xah-backward-left-bracket)
+  ("s-f" . xah-forward-right-bracket)
+  ("H-f" . xah-forward-quote)
+  ("H-b" . xah-backward-quote)
+  ("C-+" . xah-select-text-in-quote)
+
+  :config
+  (defun copy-whole-line ()
+    "Copy whole line without whitespace at the `beginning-of-line'"
+    (interactive)
+    (save-excursion
+      (back-to-indentation)
+      (kill-ring-save (point)
+                      (line-end-position))))
+  (defvar xah-brackets nil "string of left/right brackets pairs.")
+  (setq xah-brackets "()[]{}<>（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠⧘⧙⧚⧛⸜⸝⸌⸍⸂⸃⸄⸅⸉⸊᚛᚜༺༻༼༽⏜⏝⎴⎵⏞⏟⏠⏡﹁﹂﹃﹄︹︺︻︼︗︘︿﹀︽︾﹇﹈︷︸")
+
+  (defvar xah-left-brackets '("(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" )
+    "List of left bracket chars.")
+  (progn
+    ;; make xah-left-brackets based on xah-brackets
+    (setq xah-left-brackets '())
+    (dotimes ($x (- (length xah-brackets) 1))
+      (when (= (% $x 2) 0)
+	(push (char-to-string (elt xah-brackets $x))
+              xah-left-brackets)))
+    (setq xah-left-brackets (reverse xah-left-brackets)))
+
+  (defvar xah-right-brackets '(")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")
+    "list of right bracket chars.")
+  (progn
+    (setq xah-right-brackets '())
+    (dotimes ($x (- (length xah-brackets) 1))
+      (when (= (% $x 2) 1)
+	(push (char-to-string (elt xah-brackets $x))
+              xah-right-brackets)))
+    (setq xah-right-brackets (reverse xah-right-brackets)))
+
+
+
+  (defun xah-backward-left-bracket ()
+    "Move cursor to the previous occurrence of left bracket.
+The list of brackets to jump to is defined by `xah-left-brackets'.
+URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-10-01"
+    (interactive)
+    (re-search-backward (regexp-opt xah-left-brackets) nil t))
+
+  (defun xah-forward-right-bracket ()
+    "Move cursor to the next occurrence of right bracket.
+The list of brackets to jump to is defined by `xah-right-brackets'.
+URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2015-10-01"
+    (interactive)
+    (re-search-forward (regexp-opt xah-right-brackets) nil t))
+
+  (defun xah-forward-quote ()
+    "Move cursor to the next occurance of \".
+If there are consecutive quotes of the same char, keep moving until none.
+Returns `t' if found, else `nil'.
+Version 2022-03-23"
+    (interactive)
+    (if (re-search-forward "\\\"+" nil t)
+	(when (char-after) ; isn't nil, at end of buffer
+          (while (char-equal (char-before) (char-after))
+            (right-char)
+            t))
+      (progn
+	(message "No more quotes after cursor.") nil)))
+
+  (defun xah-backward-quote ()
+    "Move cursor to the previous occurrence of \".
+If there are consecutive quotes of the same char, keep moving until none.
+Returns `t' if found, else `nil'.
+URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+Version 2016-07-23"
+    (interactive)
+    (if (re-search-backward "\\\"+" nil t)
+	(when (char-before) ; isn't nil, at beginning of buffer
+          (while (char-equal (char-before) (char-after))
+            (left-char)
+            t))
+      (progn
+	(message "No more quotes before cursor.")
+	nil)))
+
+  (defun xah-select-text-in-quote ()
+    "Select text between the nearest left and right delimiters.
+Delimiters here includes the following chars: \"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
+This command select between any bracket chars, does not consider nesting. For example, if text is
+(a(b)c▮)
+the selected char is “c”, not “a(b)c”.
+
+URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
+Version 2020-11-24 2021-07-11"
+    (interactive)
+    (let ( $skipChars $p1 )
+      (setq $skipChars "^\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
+      (skip-chars-backward $skipChars)
+      (setq $p1 (point))
+      (skip-chars-forward $skipChars)
+      (set-mark $p1))))
