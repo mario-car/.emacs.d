@@ -1087,7 +1087,11 @@ kills the first ancestor semantic unit starting with that char."
   (setq dired-recursive-copies 'always
 	dired-recursive-deletes 'always
 	dired-make-directory-clickable t
-	dired-mouse-drag-files t))
+	dired-mouse-drag-files t)
+ ;; In Emacs 29 there is a binding for `repeat-mode' which let you
+ ;; repeat C-x C-j just by following it up with j.  For me, this is a
+ ;; problem as j calls `dired-goto-file', which I often use.
+ (define-key dired-jump-map (kbd "j") nil))
 
 ;; Comparing files and buffers, and finding differences.
 (use-package ediff
