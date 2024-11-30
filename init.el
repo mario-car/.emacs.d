@@ -415,7 +415,7 @@ They are actually overwritten and erased."
 
 ;; I hardly ever want to to kill buffer other then the one I'm in when
 ;; I call this function.
-(keymap-global-set "C-x k" #'kill-this-buffer)
+(keymap-global-set "C-x k" #'kill-current-buffer)
 
 ;; Enable `winner' feature which provides an undo/redo stack for windows
 (use-package winner
