@@ -819,7 +819,9 @@ kills the first ancestor semantic unit starting with that char."
 
 ;; shell settings
 (add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t
-                                            comint-input-ignoredups t)))
+                                            comint-input-ignoredups t)
+			     (keymap-set comint-mode-map "C-c C-o" nil)
+			     (keymap-set comint-mode-map "C-c o" 'comint-delete-output)))
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 (add-hook 'shell-mode-hook (lambda () (auto-fill-mode -1)
                              (abbrev-mode 1)))
