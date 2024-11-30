@@ -81,7 +81,11 @@
       (null-device . "/dev/null"))))
  '(max-lisp-eval-depth 48000)
  '(package-selected-packages
-   '(use-package-chords elfeed kind-icon consult-eglot avy-zap buffer-move cape consult-projectile corfu dumb-jump eglot-java embark-consult expand-region git-gutter google-translate helpful macrostep magit marginalia orderless rg transpose-frame vertico visual-regexp-steroids yasnippet-snippets)))
+   '(avy-zap buffer-move cape corfu dumb-jump eglot-java elfeed
+	     embark-consult expand-region git-gutter helpful kind-icon
+	     macrostep magit marginalia orderless otpp rg
+	     transpose-frame use-package-chords vertico
+	     visual-regexp-steroids yasnippet-snippets))
  '(project-ignore-buffer-conditions '("/target/"))
  '(project-vc-ignores '("target/"))
 (custom-set-faces

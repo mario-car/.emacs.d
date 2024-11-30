@@ -20,7 +20,6 @@
   (setq w32-pass-apps-to-system nil)
   (setq w32-apps-modifier 'hyper)) ; Menu/App key
 
-(setq use-package-always-ensure t)
 (setq use-package-always-defer t)
 
 ;; Enable use-package chords
@@ -347,8 +346,6 @@ They are actually overwritten and erased."
   (marginalia-mode))
 
 (use-package embark
-  :ensure t
-
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
@@ -369,7 +366,6 @@ They are actually overwritten and erased."
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
-  :ensure t
   :after (embark consult)
   :demand t ; only necessary if you have the hook below
   ;; if you want to have consult previews as you move around an
