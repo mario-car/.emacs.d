@@ -861,7 +861,7 @@ kills the first ancestor semantic unit starting with that char."
 
 ;; Select whole line, and move to the end of buffer (prompt).(
 (fset 'job-select-all
-(kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w ?\M->] 0 "%d"))
+(kmacro-lambda-form [?\C-p ?\C-a ?\C-k ?\M-> ?\C-y] 0 "%d"))
 (keymap-set shell-mode-map "C-x C-z a" #'job-select-all))
 
 ;; Better support for files with long lines
