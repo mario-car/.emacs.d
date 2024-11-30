@@ -848,19 +848,9 @@ kills the first ancestor semantic unit starting with that char."
   (yank)
   (comint-send-input))
 
-(defun copy-whole-string ()
-  "Copy URL at the point in shell, and open it in firefox."
-  (interactive)
-  (re-search-backward "[\n ]")
-  (forward-char 1)
-  (set-mark-command)
-  (re-search-forward "[\n ]")
-  (backward-char 1)
-  (kill-ring-save nil nil t))
-
 (keymap-set shell-mode-map "C-<return>" #'print-dtjob)
 (keymap-set shell-mode-map "S-<return>" #'open-tgf-log)
-(keymap-set shell-mode-map "M-W" #'copy-whole-string)
+(keymap-set shell-mode-map "M-W" #'ffap-copy-string-as-kill)
 
 ;; Select JOB_ID from 'tgq' or 'tgr' output.
 ;; Basically, select first word, but when used in context of TGF
