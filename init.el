@@ -1,3 +1,9 @@
+(package-install-selected-packages)
+
+(use-package modus-themes
+  :init
+  (load-theme 'modus-vivendi-tinted t))
+
 ;; Turn F20 keysim into super modifier
 ;; On Linux, F20 is automatically interpreted as "Super" modifier key.
 ;; This hack is only needed on MS Windows
@@ -1232,10 +1238,6 @@ argument."
 (dolist (command '(scroll-up-command scroll-down-command
                                      recenter-top-bottom other-window))
   (advice-add command :after #'pulse-line))
-
-(use-package modus-themes
-  :config
-  (load-theme 'modus-operandi t))
 
 ;; treesit is part of Emacs 29, but grammars still need to be downloaded and installed.
 ;; This snippet was taken from:
