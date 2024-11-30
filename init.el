@@ -852,7 +852,6 @@ kills the first ancestor semantic unit starting with that char."
 
 (keymap-set shell-mode-map "C-<return>" #'print-dtjob)
 (keymap-set shell-mode-map "S-<return>" #'open-tgf-log)
-(keymap-set shell-mode-map "M-W" #'ffap-copy-string-as-kill)
 
 ;; Select JOB_ID from 'tgq' or 'tgr' output.
 ;; Basically, select first word, but when used in context of TGF
