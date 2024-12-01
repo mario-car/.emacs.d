@@ -1175,12 +1175,11 @@ kills the first ancestor semantic unit starting with that char."
   ;; here fixes the issue.
   (setq git-gutter:disabled-modes '(fundamental-mode org-mode))
 
+  (global-git-gutter-mode +1)
   :config
 
   ;; Don't prompt when reverting hunk.
-  (setq git-gutter:ask-p nil)
-
-  (global-git-gutter-mode +1))
+  (setq git-gutter:ask-p nil))
 
 ;; Package `rg' just provides an interactive command `rg' to run the
 ;; search tool of the same name.
