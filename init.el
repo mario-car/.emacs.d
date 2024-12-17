@@ -4,12 +4,14 @@
   :init
   (load-theme 'modus-vivendi-tinted t))
 
-;; Turn F20 keysim into super modifier
-;; On Linux, F20 is automatically interpreted as "Super" modifier key.
-;; This hack is only needed on MS Windows
+;; Function keys as modifier keys
+  (keymap-set function-key-map "<f5>" #'event-apply-alt-modifier)
+  (keymap-set function-key-map "<f7>" #'event-apply-super-modifier)
+  (keymap-set function-key-map "<f8>" #'event-apply-hyper-modifier)
+
+
+;; Try to stop Windows from hijacking super key
 (when (eq system-type 'windows-nt)
-  (keymap-global-set "<f20>" nil) ;; bound to clipboard-kill-region by default
-  (keymap-set function-key-map "<f20>" #'event-apply-super-modifier)
   (setq w32-pass-rwindow-to-system nil)
   (setq w32-lwindow-modifier 'super)
   (w32-register-hot-key [s-]))
