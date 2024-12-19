@@ -499,13 +499,6 @@ ALIST is the option channel for display actions (see `display-buffer')."
 ;; buffers.
 (global-set-key [remap list-buffers] #'ibuffer-list-buffers)
 
-;; turn on spell checking, if available.
-(with-eval-after-load 'ispell
-  (when (executable-find ispell-program-name)
-    (add-hook 'text-mode-hook #'flyspell-mode)
-    (add-hook 'prog-mode-hook #'flyspell-prog-mode)))
-
-
 ;; Follow symlinks when opening files. This has the concrete impact,
 ;; for instance, that when you edit init.el with M-P e e i and then
 ;; later do C-x C-f, you will be in the Radian repository instead of
