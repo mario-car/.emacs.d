@@ -1,8 +1,32 @@
+;; Better default settings
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward
+      window-resize-pixelwise t
+      frame-resize-pixelwise t
+      load-prefer-newer t
+      backup-by-copying t
+      custom-file (expand-file-name "custom.el" user-emacs-directory)
+      use-short-answers t
+      make-backup-files nil
+      auto-save-default nil
+      sentence-end-double-space nil
+      kill-do-not-save-duplicates t
+      isearch-lazy-count t
+      search-whitespace-regexp ".*?"
+      global-auto-revert-non-file-buffers t ; Auto-revert all buffers, not only file-visiting buffers.
+      disabled-command-function nil
+      echo-keystrokes 1e-6		; display keystrokes in the echo area immediately
+      tab-bar-show 1			; hide tab bar when it is the only tab, and show again when additional tabs created
+      indent-tabs-mode nil              ; use spaces instead of tabs
+      whitespace-action '(cleanup auto-cleanup) ; cleanup whitespace
+      use-dialog-box nil)		;don't pop up UI dialogs when prompting
+;; Load custom.el
+(load custom-file)
 (package-install-selected-packages)
 
 (use-package modus-themes
   :init
-  (load-theme 'modus-vivendi-tinted t))
+  (load-theme 'modus-operandi-tinted t))
 
 ;; Function keys as modifier keys
   (keymap-set function-key-map "<f5>" #'event-apply-alt-modifier)
@@ -31,33 +55,6 @@
 (use-package emacs
   :chords (("xx" . er/expand-region)))
 
-
-;; Better default settings
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward
-      window-resize-pixelwise t
-      frame-resize-pixelwise t
-      load-prefer-newer t
-      backup-by-copying t
-      custom-file (expand-file-name "custom.el" user-emacs-directory)
-      use-short-answers t
-      make-backup-files nil
-      auto-save-default nil
-      sentence-end-double-space nil
-      kill-do-not-save-duplicates t
-      isearch-lazy-count t
-      search-whitespace-regexp ".*?"
-      global-auto-revert-non-file-buffers t ; Auto-revert all buffers, not only file-visiting buffers.
-      disabled-command-function nil
-      echo-keystrokes 1e-6		; display keystrokes in the echo area immediately
-      tab-bar-show 1			; hide tab bar when it is the only tab, and show again when additional tabs created
-      indent-tabs-mode nil              ; use spaces instead of tabs
-      whitespace-action '(cleanup auto-cleanup) ; cleanup whitespace
-      use-dialog-box nil)		;don't pop up UI dialogs when prompting
-;; Load custom.el
-(load custom-file)
-
-(ffap-bindings)
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
 ;; Turn on repeat mode
