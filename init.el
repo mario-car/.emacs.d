@@ -23,6 +23,7 @@
 ;; Load custom.el
 (load custom-file)
 (package-install-selected-packages)
+(setq use-package-always-defer t)
 
 (use-package modus-themes
   :init
@@ -46,7 +47,6 @@
   (setq w32-pass-apps-to-system nil)
   (setq w32-apps-modifier 'hyper)) ; Menu/App key
 
-(setq use-package-always-defer t)
 
 ;; Enable use-package chords
 (use-package use-package-chords
@@ -201,10 +201,11 @@
 
 (use-package vertico-repeat
   :after vertico
-  :ensure nil
   :hook (minibuffer-setup . vertico-repeat-save)
   :bind (("C-x ." . vertico-repeat)
-         ("H-."   . vertico-repeat)))
+	 :map vertico-map
+	 ("M-P"   . vertico-repeat-previous)
+	 ("M-N"   . vertico-repeat-next)))
 
 ;; Optionally use the `orderless' completion style.
 (use-package orderless
