@@ -1255,11 +1255,37 @@ argument."
 	      (sit-for 0.75)))))
 
 (use-package eglot
+  :bind (:map eglot-mode-map
+              ("C-c l a" . eglot-code-actions)
+              ("C-c l o" . eglot-code-actions-organize-imports)
+              ("C-c l r" . eglot-rename)
+              ("C-c l f" . eglot-format))
   :config
   (advice-add 'eglot-completion-at-point :around  #'cape-wrap-buster)
 
   (setq completion-category-overrides '((eglot (styles orderless))))
-  (setq completion-category-defaults nil))
+  (setq completion-category-defaults nil)
+
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-events-buffer-size 0)
+  (eglot-extend-to-xref nil)
+  (eglot-report-progress nil)
+  (eglot-ignored-server-capabilities
+   '(:hoverProvider
+     :documentHighlightProvider
+     :documentFormattingProvider
+     :documentRangeFormattingProvider
+     :documentOnTypeFormattingProvider
+     :colorProvider
+     :foldingRangeProvider))
+  ;; (eglot-stay-out-of '(yasnippet))
+  )
+
+(use-package jarchive
+  :after eglot
+  :config
+  (jarchive-mode))
 
 (use-package eglot-java
   :init
@@ -1275,7 +1301,8 @@ argument."
               ("C-c l o" . eglot-code-actions-organize-imports)
               ("C-c l r" . eglot-rename)
               ("C-c l f" . eglot-format))
-  :hook (java-ts-mode . eglot-java-mode))
+  :hook (java-ts-mode . eglot-java-mode)
+  :config (setq lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx4G" "-Xms100m")))
 
 (use-package elfeed
   :bind
