@@ -5,10 +5,10 @@
  ;; If there is more than one, they won't work right.
  '(org-babel-load-languages '((java . t) (shell . t) (emacs-lisp . t)))
  '(package-selected-packages
-   '(avy-zap bash-completion bind-chord buffer-move cape corfu dumb-jump
-	     eglot-java elfeed embark-consult expand-region git-gutter
-	     helpful key-chord kind-icon macrostep magit marginalia
-	     multi-vterm orderless rg transpose-frame
+   '(avy-zap bash-completion bind-chord buffer-move cape cider corfu
+	     dumb-jump eglot-java elfeed embark-consult expand-region
+	     git-gutter helpful key-chord kind-icon macrostep magit
+	     marginalia multi-vterm orderless rg transpose-frame
 	     use-package-chords vertico visual-regexp-steroids vterm
 	     yasnippet yasnippet-snippets)))
 (custom-set-faces
