@@ -782,7 +782,7 @@ kills the first ancestor semantic unit starting with that char."
 ;; with zero configuration.
 (use-package dumb-jump
   :init
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 80)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 100)
   :config
   ;; use completion system instead of popup window
   (setq xref-show-definitions-function #'xref-show-definitions-completing-read))
