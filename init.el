@@ -843,14 +843,6 @@ kills the first ancestor semantic unit starting with that char."
 (kmacro-lambda-form [?\C-p ?\C-a ?\C-k ?\M-> ?\C-y] 0 "%d"))
 (keymap-set shell-mode-map "C-x C-z a" #'job-select-all))
 
-(use-package multi-vterm
-  :bind (
-	 :map my-keymap
-	 ("t m" . #'multi-vterm)
-	 :map vterm-mode-map
-	 ("M-n" . #'multi-vterm-next)
-	 ("M-p" . #'multi-vterm-prev)))
-
 ;; Better support for files with long lines
 (setq-default bidi-paragraph-direction 'left-to-right)
 (setq-default bidi-inhibit-bpa t)

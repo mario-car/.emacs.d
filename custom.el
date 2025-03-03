@@ -5,12 +5,16 @@
  ;; If there is more than one, they won't work right.
  '(org-babel-load-languages '((java . t) (shell . t) (emacs-lisp . t)))
  '(package-selected-packages
-   '(avy-zap bash-completion bind-chord buffer-move cape cider corfu
-	     dumb-jump eglot-java elfeed embark-consult expand-region
-	     git-gutter helpful key-chord kind-icon macrostep magit
-	     marginalia multi-vterm orderless rg transpose-frame
-	     use-package-chords vertico visual-regexp-steroids vterm
-	     yasnippet yasnippet-snippets)))
+   '(avy-zap bash-completion bind-chord buffer-move cape cider codium
+	     corfu dumb-jump eglot-java elfeed embark-consult
+	     expand-region git-gutter helpful key-chord kind-icon
+	     lsp-java lsp-mode macrostep magit marginalia 
+	     orderless rg transpose-frame use-package-chords vertico
+	     visual-regexp-steroids yasnippet yasnippet-snippets))
+  '(package-vc-selected-packages
+   '((eglot-booster :vc-backend Git :url "https://github.com/jdtsmith/eglot-booster.git")))
+ '(project-ignore-buffer-conditions '("/target/"))
+ '(project-vc-ignores '("target/")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
