@@ -53,7 +53,7 @@
   :demand t
   :init (key-chord-mode 1))
 (use-package emacs
-  :chords (("xx" . er/expand-region)))
+  :chords (("xx" . xref-etags-mode)))
 
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
