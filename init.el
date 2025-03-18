@@ -1358,22 +1358,9 @@ argument."
   :config
   (jarchive-mode))
 
-(use-package eglot-java
-  :init
-  (setenv "JAVA_HOME" "/app/vbuild/SLED12-x86_64/openjdk/21.0.4/lib")
-  :bind (:map eglot-java-mode-map
-              ("C-c l n" . eglot-java-file-new)
-	      ("C-c l x" . eglot-java-run-main)
-	      ("C-c l t" . eglot-java-run-test)
-	      ("C-c l N" . eglot-java-project-new)
-	      ("C-c l T" . eglot-java-project-build-task)
-	      ("C-c l R" . eglot-java-project-build-refresh)
-              ("C-c l a" . eglot-code-actions)
-              ("C-c l o" . eglot-code-actions-organize-imports)
-              ("C-c l r" . eglot-rename)
-              ("C-c l f" . eglot-format))
-  :hook (java-ts-mode . eglot-java-mode)
-  :config (setq lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx4G" "-Xms100m")))
+(use-package eglot-booster
+	:after eglot
+	:config	(eglot-booster-mode))
 
 (use-package clojure
   :init
