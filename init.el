@@ -1033,7 +1033,7 @@ kills the first ancestor semantic unit starting with that char."
         org-log-done 'time
         org-catch-invisible-edits 'smart
         org-startup-indented t
-        org-ellipsis (if (and (display-graphic-p) (char-displayable-p ?⏷)) "\t⏷" nil)
+	org-ellipsis " ▾"
         org-pretty-entities nil
         org-hide-emphasis-markers t)
 
