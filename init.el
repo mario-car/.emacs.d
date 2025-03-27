@@ -1335,6 +1335,7 @@ argument."
               ("C-c l f" . eglot-format))
   :config
   (advice-add 'eglot-completion-at-point :around  #'cape-wrap-buster)
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-noninterruptible)
 
   (setq completion-category-overrides '((eglot (styles orderless))))
   (setq completion-category-defaults nil)
@@ -1346,7 +1347,7 @@ argument."
   (eglot-report-progress nil)
   (eglot-ignored-server-capabilities
    '(:hoverProvider
-     :documentHighlightProvider
+     ;; :documentHighlightProvider
      :documentFormattingProvider
      :documentRangeFormattingProvider
      :documentOnTypeFormattingProvider
