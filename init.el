@@ -1431,12 +1431,6 @@ argument."
   :bind
   ("M-W" . ffap-copy-string-as-kill)
   ("s-w" . copy-whole-line)
-  ("s-b" . xah-backward-left-bracket)
-  ("s-f" . xah-forward-right-bracket)
-  ("H-f" . xah-forward-quote)
-  ("H-b" . xah-backward-quote)
-  ("C-+" . xah-select-text-in-quote)
-
   :config
   (defun copy-whole-line ()
     "Copy whole line without whitespace at the `beginning-of-line'"
