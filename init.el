@@ -966,16 +966,7 @@ kills the first ancestor semantic unit starting with that char."
               ;; other bindings of `backward-paragraph' (e.g. M-{).
               ;; Here we establish that remapping.
               ([remap backward-paragraph] . #'org-backward-paragraph)
-              ([remap forward-paragraph] . #'org-forward-paragraph)
-
-	      ("C-M-k" . org-metaup)
-	      ("C-M-j" . org-metadown)
-	      ("C-M-l" . org-metaright)
-	      ("C-M-h" . org-metaleft)
-	      ("M-J" . org-shiftdown)
-	      ("M-K" . org-shiftup)
-	      ("M-L" . org-shiftright)
-	      ("M-H" . org-shiftleft))
+              ([remap forward-paragraph] . #'org-forward-paragraph))
   :bind* (;; Add the global keybindings for accessing Org Agenda and
           ;; Org Capture that are recommended in the Org manual.
           ("C-c a" . #'org-agenda)
