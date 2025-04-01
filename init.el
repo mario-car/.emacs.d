@@ -12,6 +12,8 @@
       sentence-end-double-space nil
       kill-do-not-save-duplicates t
       isearch-lazy-count t
+      isearch-allow-motion t		; When isearching, enable M-<, M->, C-v and M-v to skip between matches in an intuitive fashion.
+      isearch-motion-changes-direction t
       search-whitespace-regexp ".*?"
       global-auto-revert-non-file-buffers t ; Auto-revert all buffers, not only file-visiting buffers.
       disabled-command-function nil
