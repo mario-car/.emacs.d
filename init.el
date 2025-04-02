@@ -1424,6 +1424,7 @@ argument."
   :bind
   ("M-W" . ffap-copy-string-as-kill)
   ("s-w" . copy-whole-line)
+  ("s-<tab>" . crux-switch-to-previous-buffer)
   :config
   (defun copy-whole-line ()
     "Copy whole line without whitespace at the `beginning-of-line'"
@@ -1431,7 +1432,12 @@ argument."
     (save-excursion
       (back-to-indentation)
       (kill-ring-save (point)
-                      (line-end-position)))))
+                      (line-end-position))))
+  (defun crux-switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1))))
 
 (use-package codium
   :vc (:url https://github.com/Exafunction/codeium.el)
