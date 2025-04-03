@@ -105,13 +105,6 @@
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
-;; Make scrolling less stuttered
-(setq auto-window-vscroll nil)
-(customize-set-variable 'fast-but-imprecise-scrolling t)
-(customize-set-variable 'scroll-conservatively 101)
-(customize-set-variable 'scroll-margin 0)
-(customize-set-variable 'scroll-preserve-screen-position t)
-
 ;; Enable vertico
 (use-package vertico
   :commands vertico-mode
