@@ -344,47 +344,6 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-;; Emacs provides Do-What-I-Mean versions of various
-;; editing commands: They act on the region when the region is active,
-;; and on an appropriate semantic unit otherwise. Replace "upcase-word"
-;; and "downcase-word" with "upcase-dwim" and "downcase-dwim"
-;; respectively, and you can safely eject the bindings for
-;; "upcase-region" and "downcase-region".
-(keymap-global-set "M-u" #'upcase-dwim)
-(keymap-global-set "M-l" #'downcase-dwim)
-(keymap-global-set "M-c" #'capitalize-dwim)
-;; Exchange any two non-overlapping regions in a buffer
-(keymap-global-set "C-x C-M-t" #'transpose-regions)
-
-;; Personal keymap
-;; Replace suspend-frame which this keymap since suspend-frame is
-;; never useful and always unexpected and by accident.
-(progn
-  ;; define key sequence
-  (define-prefix-command 'my-keymap)
-  (keymap-global-set "C-z" #'my-keymap)
-  (keymap-set my-keymap "t s" #'(lambda () (interactive) (shell)
-                                       (delete-other-windows)
-                                       (end-of-buffer)))
-  ; populate with personal keybinding sequences
-  )
-
-;; Maybe useful
-(bind-key "s-z" #'copy-from-above-command)
-(keymap-global-set "C-S-h" #'backward-delete-char-untabify)
-
-;; If you have something on the system clipboard, and then kill
-;; something in Emacs, then by default whatever you had on the system
-;; clipboard is gone and there is no way to get it back. Setting the
-;; following option makes it so that when you kill something in Emacs,
-;; whatever was previously on the system clipboard is pushed into the
-;; kill ring. This way, you can paste it with `yank-pop'.
-(setq save-interprogram-paste-before-kill t)
-
-;; I hardly ever want to to kill buffer other then the one I'm in when
-;; I call this function.
-(keymap-global-set "C-x k" #'kill-current-buffer)
-
 ;; Enable `winner' feature which provides an undo/redo stack for windows
 (use-package winner
   :ensure nil
@@ -1319,6 +1278,7 @@ argument."
   ("M-W" . ffap-copy-string-as-kill)
   ("s-w" . copy-whole-line)
   ("s-<tab>" . crux-switch-to-previous-buffer)
+  ("s-k" . kill-paragraph)
   :config
   (defun copy-whole-line ()
     "Copy whole line without whitespace at the `beginning-of-line'"
@@ -1328,10 +1288,51 @@ argument."
       (kill-ring-save (point)
                       (line-end-position))))
   (defun crux-switch-to-previous-buffer ()
-  "Switch to previously open buffer.
+    "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
-  (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1))))
+    (interactive)
+    (switch-to-buffer (other-buffer (current-buffer) 1)))
+  :init
+  ;; Emacs provides Do-What-I-Mean versions of various
+  ;; editing commands: They act on the region when the region is active,
+  ;; and on an appropriate semantic unit otherwise. Replace "upcase-word"
+  ;; and "downcase-word" with "upcase-dwim" and "downcase-dwim"
+  ;; respectively, and you can safely eject the bindings for
+  ;; "upcase-region" and "downcase-region".
+  (keymap-global-set "M-u" #'upcase-dwim)
+  (keymap-global-set "M-l" #'downcase-dwim)
+  (keymap-global-set "M-c" #'capitalize-dwim)
+  ;; Exchange any two non-overlapping regions in a buffer
+  (keymap-global-set "C-x C-M-t" #'transpose-regions)
+
+  ;; Personal keymap
+  ;; Replace suspend-frame which this keymap since suspend-frame is
+  ;; never useful and always unexpected and by accident.
+  (progn
+    ;; define key sequence
+    (define-prefix-command 'my-keymap)
+    (keymap-global-set "C-z" #'my-keymap)
+    (keymap-set my-keymap "t s" #'(lambda () (interactive) (shell)
+                                    (delete-other-windows)
+                                    (end-of-buffer)))
+					; populate with personal keybinding sequences
+    )
+
+  ;; Maybe useful
+  (bind-key "s-z" #'copy-from-above-command)
+  (keymap-global-set "C-S-h" #'backward-delete-char-untabify)
+
+  ;; If you have something on the system clipboard, and then kill
+  ;; something in Emacs, then by default whatever you had on the system
+  ;; clipboard is gone and there is no way to get it back. Setting the
+  ;; following option makes it so that when you kill something in Emacs,
+  ;; whatever was previously on the system clipboard is pushed into the
+  ;; kill ring. This way, you can paste it with `yank-pop'.
+  (setq save-interprogram-paste-before-kill t)
+
+  ;; I hardly ever want to to kill buffer other then the one I'm in when
+  ;; I call this function.
+  (keymap-global-set "C-x k" #'kill-current-buffer))
 
 (use-package codium
   :vc (:url https://github.com/Exafunction/codeium.el)
