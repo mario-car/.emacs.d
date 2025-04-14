@@ -1320,7 +1320,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
   ;; Maybe useful
   (bind-key "s-z" #'copy-from-above-command)
-  (keymap-global-set "C-S-h" #'backward-delete-char-untabify)
+  (keymap-global-set "C-S-h" #'backward-kill-word)
 
   ;; If you have something on the system clipboard, and then kill
   ;; something in Emacs, then by default whatever you had on the system
