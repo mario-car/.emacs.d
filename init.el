@@ -858,19 +858,27 @@ ALIST is the option channel for display actions (see `display-buffer')."
   ;; Open Org Agenda in full screen
   (setq org-agenda-window-setup 'only-window)
 
+  ;; Only show in org report files where there is something to report
+  (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 3 :stepskip0 t :fileskip0 t))
+
   ;; Specific files to show for custom agenda view
   (setq org-agenda-custom-commands
         '(("n" "Agenda and all TODOs"
-           ((agenda "" nil)
+           ((agenda "" ((org-agenda-span 'day)
+			(org-agenda-clockreport-mode t)
+			(org-agenda-files '("~/org/tasklist.org" "~/org/tasklist.org_archive" "~/org/scheduled.org" "~/org/birthdays.org"))))
             (todo "TODO|DOING"
                   ((org-agenda-files
-                    '("~/org/tasklist.org" "~/org/SP.org")))))
+                    '("~/org/tasklist.org"))))
+	    (tags "LOGGING=1"
+                  ((org-agenda-files
+                    '("~/org/tasklist.org")))))
            nil)))
 
   ;; Set todo keywords
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DOING(i)" "HANGUP(h)" "|" "DONE(d)" "CANCEL(c)")
-          (sequence "⚑(T)" "🏴(I)" "❓(H)" "|" "✔(D)" "✘(C)"))
+          (sequence "⚑(T)" "λ(I)" "❓(H)" "|" "✔(D)" "✘(C)"))
         org-todo-keyword-faces '(("HANGUP" . warning)
                                  ("❓" . warning))
         org-priority-faces '((?A . error)
@@ -890,8 +898,7 @@ ALIST is the option channel for display actions (see `display-buffer')."
         org-refile-targets (quote (("tasklist.org" :maxlevel . 3)
                                    ("scheduled.org" :maxlevel . 3)
                                    ("someday.org" :maxlevel . 3)
-                                   ("gtd.org" :maxlevel . 3)
-                                   ("SP.org" :maxlevel . 3)))
+                                   ("gtd.org" :maxlevel . 3)))
         org-refile-use-outline-path 'file
         org-outline-path-complete-in-steps nil)
 
