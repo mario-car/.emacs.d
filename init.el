@@ -928,6 +928,14 @@ ALIST is the option channel for display actions (see `display-buffer')."
 	   "* Topic: %^{Topic} -- Author: %^{Author} %? Added: %U")))
 
 
+  ;; When starting a clock on some task, change it's state to DOING if it's not already
+  (defun my/org-change-todo-to-doing-on-clock-in ()
+    "Change TODO state to DOING when clocking in."
+    (when (and (string= (org-get-todo-state) "TODO")
+               (not (string= (org-get-todo-state) "DOING")))
+      (org-todo "DOING")))
+  (add-hook 'org-clock-in-hook 'my/org-change-todo-to-doing-on-clock-in)
+
   ;; Custom macros for LA
   (fset 'copy-previous-analysis
 	(kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\M-b ?\M-f ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-u ?\C-  ?\C-u ?\C-  ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\C-o ?\C-y ?\C-c ?\C-t ?d] 0 "%d"))
