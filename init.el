@@ -624,13 +624,9 @@ ALIST is the option channel for display actions (see `display-buffer')."
 
 
 (use-package corfu
-  :bind (:map corfu-map
-	      ("RET"   . nil)
-	      ("S-<return>" . corfu-insert))
   ;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
 
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since Dabbrev can be used globally (M-/).
@@ -646,20 +642,20 @@ ALIST is the option channel for display actions (see `display-buffer')."
   (define-key corfu-map (kbd "M-d") #'corfu-popupinfo-toggle))
 
 ;; A few more useful configurations...
-(use-package emacs
-  :init
-  ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
+;; (use-package emacs
+;;   :init
+;;   ;; TAB cycle if there are only few candidates
+;;   (setq completion-cycle-threshold 3)
 
-  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
-  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
+;;   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+;;   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+;;   ;; (setq read-extended-command-predicate
+;;   ;;       #'command-completion-default-include-p)
 
-  ;; Enable indentation+completion using the TAB key.
-  ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete)
-  (setq completions-detailed t))
+;;   ;; Enable indentation+completion using the TAB key.
+;;   ;; `completion-at-point' is often bound to M-TAB.
+;;   (setq tab-always-indent 'complete)
+;;   (setq completions-detailed t))
 
 ;; Corfu Extensions (Cape)
 (use-package cape
@@ -710,6 +706,17 @@ ALIST is the option channel for display actions (see `display-buffer')."
   (kind-icon-blend-background nil)
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)) ; Enable `kind-icon'
+
+;; Utilize completion-preview-mode.
+;; Disable TAB
+(use-package completion-preview
+  :bind (:map completion-preview-active-mode-map
+	      ("TAB" . #'completion-at-point)
+	      ("M-f" . #'completion-preview-insert)
+	      ("M-n" . #'completion-preview-next-candidate)
+	      ("M-p" . #'completion-preview-prev-candidate))
+  :init
+  (global-completion-preview-mode))
 
 ;; Package `dumb-jump' provides a mechanism to jump to the definitions
 ;; of functions, variables, etc. in a variety of programming
