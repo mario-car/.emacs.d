@@ -587,7 +587,20 @@ ALIST is the option channel for display actions (see `display-buffer')."
 
 ;; jump to character
 (use-package avy
-  :bind (("s-." . avy-goto-char-timer)))
+  :bind (("s-." . avy-goto-char-timer))
+  :config
+  (defun avy-action-embark (pt)
+    (unwind-protect
+        (save-excursion
+          (goto-char pt)
+          (embark-act))
+      (select-window
+       (cdr (ring-ref avy-ring 0))))
+    t)
+  (setf (alist-get ?. avy-dispatch-alist) 'avy-action-embark)
+
+  ;; Avy + Isearch
+  (define-key isearch-mode-map (kbd "M-j") 'avy-isearch))
 
 ;; Package `visual-regexp' provides an alternate version of
 ;; `query-replace' which highlights matches and replacements as you
