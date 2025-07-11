@@ -61,6 +61,8 @@
 (global-auto-revert-mode 1)
 ;; Turn on repeat mode
 (repeat-mode)
+;; Turn on line highlighting
+(global-hl-line-mode)
 
 (defvar org-repeat-map
   (let ((map (make-sparse-keymap)))
