@@ -1349,6 +1349,7 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; define key sequence
     (define-prefix-command 'my-keymap)
     (keymap-global-set "C-z" #'my-keymap)
+    (keymap-global-set "<insert>" #'my-keymap)
     (keymap-set my-keymap "t s" #'(lambda () (interactive) (shell)
                                     (delete-other-windows)
                                     (end-of-buffer)))
