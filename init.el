@@ -587,7 +587,8 @@ ALIST is the option channel for display actions (see `display-buffer')."
 
 ;; jump to character
 (use-package avy
-  :bind (("s-." . avy-goto-char-timer))
+  :bind (("s-." . avy-goto-char-2)
+	 ("s-s" . avy-goto-char-timer))
   :config
   (defun avy-action-embark (pt)
     (unwind-protect
