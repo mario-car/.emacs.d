@@ -4,6 +4,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(calendar-week-start-day 1)
+ '(mouse-wheel-progressive-speed nil)
+ '(mouse-wheel-scroll-amount
+   '(3 ((shift) . hscroll) ((meta)) ((control meta) . global-text-scale)
+       ((control) . text-scale)))
  '(org-babel-load-languages '((java . t) (shell . t) (emacs-lisp . t)))
  '(package-selected-packages
    '(all-the-icons all-the-icons-completion all-the-icons-nerd-fonts
