@@ -6,7 +6,7 @@
  '(calendar-week-start-day 1)
  '(mouse-wheel-progressive-speed nil)
  '(mouse-wheel-scroll-amount
-   '(3 ((shift) . hscroll) ((meta)) ((control meta) . global-text-scale)
+   '(4 ((shift) . hscroll) ((meta)) ((control meta) . global-text-scale)
        ((control) . text-scale)))
  '(org-babel-load-languages '((java . t) (shell . t) (emacs-lisp . t)))
  '(package-selected-packages
