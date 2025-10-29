@@ -601,6 +601,7 @@ ALIST is the option channel for display actions (see `display-buffer')."
     t)
   (setf (alist-get ?. avy-dispatch-alist) 'avy-action-embark)
 
+  :init
   ;; Avy + Isearch
   (define-key isearch-mode-map (kbd "M-j") 'avy-isearch))
 
