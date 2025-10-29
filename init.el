@@ -95,7 +95,8 @@
   "n" #'smerge-next
   "p" #'smerge-prev
   "r" #'smerge-resolve
-  "u" #'smerge-keep-upper)
+  "u" #'smerge-keep-upper
+  "N" #'smerge-vc-next-conflict)
 
 ;; Easier to press `repeat' command
 (bind-key "<f6>" #'repeat)
