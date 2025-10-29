@@ -759,7 +759,8 @@ ALIST is the option channel for display actions (see `display-buffer')."
 (add-hook 'shell-mode-hook (lambda () (setq comint-scroll-to-bottom-on-input t
                                             comint-input-ignoredups t)
 			     (keymap-set comint-mode-map "C-c C-o" nil)
-			     (keymap-set comint-mode-map "C-c o" 'comint-delete-output)))
+			     (keymap-set comint-mode-map "C-c o" 'comint-delete-output)
+			     (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)))
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 (add-hook 'shell-mode-hook (lambda () (auto-fill-mode -1)
                              (abbrev-mode 1)))
