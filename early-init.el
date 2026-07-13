@@ -29,7 +29,24 @@
 (setq gc-cons-threshold (* 100 1024 1024))
 (setq read-process-output-max (* 1024 1024))
 
+(set-face-attribute 'default nil
+                    :family "JetBrains Mono"  ; or "Iosevka", "Fira Code", "Cascadia Code", "JetBrains Mono"
+                    :height 120
+                    :weight 'regular)
+
+;; variable-pitch for org/prose
+(set-face-attribute 'variable-pitch nil
+                    :family "Cantarell"
+                    :height 130)
+
+
+(setq-default left-margin-width 1
+              right-margin-width 1)
+(add-to-list 'default-frame-alist '(internal-border-width . 12))
+
+
 ;; Better default modes
 (electric-pair-mode t)
 (show-paren-mode 1)
 (recentf-mode t)
+(pixel-scroll-precision-mode 1)

@@ -1387,3 +1387,6 @@ Repeated invocations toggle between the two most recently open buffers."
   (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
 
 
+(use-package mood-line
+  :init (mood-line-mode))
+
