@@ -13,10 +13,10 @@
  '(org-babel-load-languages '((java . t) (shell . t) (emacs-lisp . t)))
  '(package-selected-packages
    '(avy-zap bind-chord cape cider corfu
-	     dumb-jump eglot-booster elfeed
+	     dumb-jump elfeed
 	     embark-consult expand-region git-gutter gptel
 	     helpful key-chord kind-icon macrostep magit
-	     marginalia mood-line orderless org-present rg
+	     marginalia mood-line orderless org-present
 	     use-package-chords vertico visual-regexp vterm yasnippet yasnippet-snippets))
  '(project-ignore-buffer-conditions '("/target/"))
  '(project-vc-ignores '("target/"))

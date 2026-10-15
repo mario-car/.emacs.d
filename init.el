@@ -18,8 +18,6 @@
       disabled-command-function nil
       echo-keystrokes 1e-6		; display keystrokes in the echo area immediately
       tab-bar-show 1			; hide tab bar when it is the only tab, and show again when additional tabs created
-      indent-tabs-mode nil              ; use spaces instead of tabs
-      whitespace-action '(cleanup auto-cleanup) ; cleanup whitespace
       use-dialog-box nil)		;don't pop up UI dialogs when prompting
 ;; Load custom.el
 (load custom-file)
@@ -86,7 +84,6 @@
 	        	    (minibuffer-complete-and-exit)
 	        	  (exit-minibuffer))))
          ("C->"     . embark-become)
-         (">"       . embark-become)
          ("C-<tab>"   . embark-act-with-completing-read)
          ("C-o"     . embark-minimal-act)
          ("C-M-o"   . embark-minimal-act-noexit)
@@ -710,9 +707,6 @@ ALIST is the option channel for display actions (see `display-buffer')."
   (setq org-special-ctrl-a/e t)
   (setq org-special-ctrl-k t)
 
-  ;; Disable `auto-fill-mode', it interferes with my other scripts
-  (auto-fill-mode -1)
-
   ;; When you create a sparse tree and `org-indent-mode' is enabled,
   ;; the highlighting destroys the invisibility added by
   ;; `org-indent-mode'. Therefore, don't highlight when creating a
@@ -954,13 +948,6 @@ ALIST is the option channel for display actions (see `display-buffer')."
   ;; Don't prompt when reverting hunk.
   (setq git-gutter:ask-p nil))
 
-;; Package `rg' just provides an interactive command `rg' to run the
-;; search tool of the same name.
-(use-package rg
-  :bind (("M-s R" . #'rg))
-  :config
-  (rg-enable-default-bindings))
-
 ;; Feature `browse-url' provides commands for opening URLs in
 ;; browsers.
 (use-package browse-url
@@ -1095,7 +1082,7 @@ argument."
   :bind
   ("M-W" . ffap-copy-string-as-kill)
   ("s-w" . copy-whole-line)
-  ("s-<tab>" . crux-switch-to-previous-buffer)
+  ("s-<tab>" . mode-line-other-buffer)
   ("s-k" . kill-paragraph)
   :config
   (defun copy-whole-line ()
@@ -1105,12 +1092,7 @@ argument."
       (back-to-indentation)
       (kill-ring-save (point)
                       (line-end-position))))
-  (defun crux-switch-to-previous-buffer ()
-    "Switch to previously open buffer.
-Repeated invocations toggle between the two most recently open buffers."
-    (interactive)
-    (switch-to-buffer (other-buffer (current-buffer) 1)))
-  :init
+    :init
   ;; Emacs provides Do-What-I-Mean versions of various
   ;; editing commands: They act on the region when the region is active,
   ;; and on an appropriate semantic unit otherwise. Replace "upcase-word"
