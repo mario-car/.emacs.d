@@ -13,7 +13,6 @@
       frame-inhibit-implied-resize t)
 
 (setq use-file-dialog nil
-      inhibit-splash-screen t
       inhibit-startup-screen t
       inhibit-startup-echo-area-message user-login-name ; read the docstring
       inhibit-startup-buffer-menu t
@@ -31,7 +30,7 @@
 
 (set-face-attribute 'default nil
                     :family "JetBrains Mono"  ; or "Iosevka", "Fira Code", "Cascadia Code", "JetBrains Mono"
-                    :height 120
+                    :height 110
                     :weight 'regular)
 
 ;; variable-pitch for org/prose
@@ -42,11 +41,10 @@
 
 (setq-default left-margin-width 1
               right-margin-width 1)
-(add-to-list 'default-frame-alist '(internal-border-width . 12))
+(add-to-list 'default-frame-alist '(internal-border-width . 1))
 
 
 ;; Better default modes
 (electric-pair-mode t)
-(show-paren-mode 1)
 (recentf-mode t)
 (pixel-scroll-precision-mode 1)

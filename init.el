@@ -1,8 +1,7 @@
+;;; -*- lexical-binding: t -*-
 ;; Better default settings
-(require 'uniquify)
 (setq uniquify-buffer-name-style 'forward
       window-resize-pixelwise t
-      frame-resize-pixelwise t
       load-prefer-newer t
       backup-by-copying t
       custom-file (expand-file-name "custom.el" user-emacs-directory)
@@ -27,9 +26,7 @@
 (package-install-selected-packages)
 (setq use-package-always-defer t)
 
-(use-package modus-themes
-  :init
-  (load-theme 'modus-operandi-tinted t))
+(load-theme 'modus-vivendi-tinted t)
 
 ;; Function keys as modifier keys
   (keymap-set function-key-map "<f5>" #'event-apply-alt-modifier)
@@ -64,45 +61,11 @@
 ;; Turn on line highlighting
 (global-hl-line-mode)
 
-(defvar org-repeat-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map "n" 'org-next-visible-heading)
-    (define-key map "p" 'org-previous-visible-heading)
-    (define-key map "f" 'org-forward-heading-same-level)
-    (define-key map "b" 'org-backward-heading-same-level)
-    (define-key map "u" 'outline-up-heading)
-    map)
-  "Keymap to repeat org key sequences.  Used in `repeat-mode'.")
-(put 'org-next-visible-heading 'repeat-map 'org-repeat-map)
-(put 'org-previous-visible-heading 'repeat-map 'org-repeat-map)
-(put 'org-forward-heading-same-level 'repeat-map 'org-repeat-map)
-(put 'org-backward-heading-same-level 'repeat-map 'org-repeat-map)
-(put 'outline-up-heading 'repeat-map 'org-repeat-map)
-
-(defvar-keymap smerge-repeat-key-map
-  :doc "Keymap to repeat smerge key sequence."
-  :repeat t
-  "<" #'smerge-diff-base-upper
-  "=" #'smerge-diff-upper-lower
-  ">" #'smerge-diff-base-lower
-  "C" #'smerge-combine-with-next
-  "E" #'smerge-ediff
-  "R" #'smerge-refine
-  "RET" #'smerge-keep-current
-  "a" #'smerge-keep-all
-  "b" #'smerge-keep-base
-  "l" #'smerge-keep-lower
-  "n" #'smerge-next
-  "p" #'smerge-prev
-  "r" #'smerge-resolve
-  "u" #'smerge-keep-upper
-  "N" #'smerge-vc-next-conflict)
-
 ;; Easier to press `repeat' command
 (bind-key "<f6>" #'repeat)
 
 ;; hippie-expand is dabrev-expand on steroids? 
-(use-package hippie-expand
+(use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
   :commands (hippie-expand)
   :custom
@@ -149,21 +112,12 @@
 ;; A few more useful configurations...
 (use-package emacs
   :init
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+  ;; `completing-read-multiple' shows its separator via `crm-prompt'.
 
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  ;; Do not allow the cursor in the minibuffer prompt.  The custom
+  ;; setter also enables `cursor-intangible-mode' in the minibuffer.
+  (setopt minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
 
   ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
   ;; Vertico commands are hidden in normal buffers.
@@ -201,7 +155,8 @@
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+        completion-category-overrides '((file (styles partial-completion))
+                                        (eglot (styles orderless)))))
 
 ;; Example configuration for Consult
 (use-package consult
@@ -252,11 +207,6 @@
          ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
          ("M-s L" . consult-line-multi))           ;; needed by consult-line to detect isearch
 
-  ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI. You may want to also
-  ;; enable `consult-preview-at-point-mode` in Embark Collect buffers.
-  :hook (completion-list-mode . consult-preview-at-point-mode)
-
   ;; The :init configuration is always executed (Not lazy)
   :init
 
@@ -290,20 +240,12 @@
    :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
+   consult-source-recent-file consult-source-project-recent-file consult-source-bookmark
    :preview-key "M-.")
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
-  (setq consult-narrow-key "<") ;; (kbd "C-+")
-
-  ;; Optionally configure a function which returns the project root directory.
-  ;; There are multiple reasonable alternatives to chose from.
-  ;;;; 1. project.el (project-roots)
-  (setq consult-project-root-function
-        (lambda ()
-          (when-let (project (project-current))
-            (car (project-roots project))))))
+  (setq consult-narrow-key "<")) ;; (kbd "C-+")
 
 ;; Enable richer annotations using the Marginalia package
 (use-package marginalia
@@ -341,41 +283,13 @@
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :after (embark consult)
-  :demand t ; only necessary if you have the hook below
-  ;; if you want to have consult previews as you move around an
-  ;; auto-updating embark collect buffer
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  :demand t)
 
 ;; Enable `winner' feature which provides an undo/redo stack for windows
 (use-package winner
   :ensure nil
   :init
   (winner-mode +1))
-
-;; Package `transpose-frame' provides simple commands to mirror,
-;; rotate, and transpose Emacs windows: `flip-frame', `flop-frame',
-;; `transpose-frame', `rotate-frame-clockwise',
-;; `rotate-frame-anticlockwise', `rotate-frame'.
-(use-package transpose-frame
-  :bind* (("C-x C-z R" . #'transpose-frame)
-          ("C-x C-z r" . #'rotate-frame-clockwise)
-          ("C-x C-z f" . #'flip-frame)
-          ("C-x C-z F" . #'flop-frame)
-	  :repeat-map transpose-frame-repeat-map
-	  ("r" . #'rotate-frame-clockwise)
-	  ("R" . #'transpose-frame)
-	  ("f" . #'flip-frame)
-	  ("F" . #'flop-frame)))
-
-;; Package `buffer-move' provides simple commands to swap Emacs
-;; windows: `buf-move-up', `buf-move-down', `buf-move-left',
-;; `buf-move-right'.
-(use-package buffer-move
-  :bind* (("C-x C-z <up>" . #'buf-move-up)
-	  ("C-x C-z <down>" . #'buf-move-down)
-	  ("C-x C-z <left>" . #'buf-move-left)
-	  ("C-x C-z <right>" . #'buf-move-right)))
 
 ;; Feature `ibuffer' provides a more modern replacement for the
 ;; `list-buffers' command.
@@ -545,14 +459,8 @@ ALIST is the option channel for display actions (see `display-buffer')."
 (use-package project
   :ensure nil
   :config
-  (defun my-project-root ()
-    (interactive)
-    (let ((project (project-current)))
-      (while (ignore-errors (cdr project))
-	(setq project (cdr project)))
-      (dired project)))
   (add-to-list 'project-switch-commands '(consult-project-buffer "Project Buffers" ?b))
-  (add-to-list 'project-switch-commands '(my-project-root "Dired root" ?D))
+  (add-to-list 'project-switch-commands '(project-dired "Dired root" ?D))
   (add-to-list 'project-switch-commands '(consult-ripgrep "Consult ripgrep" ?r))
   (add-to-list 'project-switch-commands '(magit-project-status "Magit status" ?m)))
 
@@ -610,18 +518,6 @@ ALIST is the option channel for display actions (see `display-buffer')."
 ;; type.
 (use-package visual-regexp
   :bind (([remap query-replace] . #'vr/query-replace)))
-
-;; Package `visual-regexp-steroids' allows `visual-regexp' to use
-;; regexp engines other than Emacs'; for example, Python or Perl
-;; regexps.
-(use-package visual-regexp-steroids
-  :demand t
-  :after visual-regexp
-  :config
-
-  ;; Use Emacs-style regular expressions by default, instead of
-  ;; Python-style.
-  (setq vr/engine 'emacs))
 
 ;; expand-region is useful. But there are existing keybindings for
 ;; selecting text like M-@ or C-M-@, so will try to rely on those
@@ -683,9 +579,8 @@ ALIST is the option channel for display actions (see `display-buffer')."
          ("C-c p h" . cape-history)
 	 ("C-c p f" . cape-file)
          ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
+         ("C-c p s" . cape-elisp-symbol)
          ("C-c p a" . cape-abbrev)
-         ("C-c p i" . cape-ispell)
          ("C-c p l" . cape-line)
          ("C-c p w" . cape-dict)
          ("C-c p \\" . cape-tex)
@@ -707,13 +602,7 @@ ALIST is the option channel for display actions (see `display-buffer')."
   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
   ;;(add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
-  :config
-  ;; Silence the pcomplete capf, no errors or messages!
-  ;; Important for corfu
-  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
-  ;; Ensure that pcomplete does not write to the buffer
-  ;; and behaves as a pure `completion-at-point-function'.
-  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
+  )
 
 ;;;;; Kind Icon (For Corfu)
 (use-package kind-icon
@@ -792,18 +681,6 @@ ALIST is the option channel for display actions (see `display-buffer')."
 
 (keymap-set shell-mode-map "C-<return>" #'print-dtjob)
 (keymap-set shell-mode-map "S-<return>" #'open-tgf-log)
-
-;; Select JOB_ID from 'tgq' or 'tgr' output.
-;; Basically, select first word, but when used in context of TGF
-;; output, that is JOB_ID
-(fset 'jobid
-   (kmacro-lambda-form [?\C-a ?\C-  ?\M-f ?\M-w ?\C-y] 0 "%d"))
-(keymap-set shell-mode-map "C-x C-z s" #'jobid)
-
-;; Select whole line, and move to the end of buffer (prompt).(
-(fset 'job-select-all
-(kmacro-lambda-form [?\C-p ?\C-a ?\C-k ?\M-> ?\C-y] 0 "%d"))
-(keymap-set shell-mode-map "C-x C-z a" #'job-select-all))
 
 ;; Better support for files with long lines
 (setq-default bidi-paragraph-direction 'left-to-right)
@@ -899,7 +776,16 @@ ALIST is the option channel for display actions (see `display-buffer')."
 	    (tags "LOGGING=1"
                   ((org-agenda-files
                     '("~/org/tasklist.org")))))
-           nil)))
+           nil)
+	  ))
+  (add-to-list 'org-agenda-custom-commands
+    '("k" "Kirocage lead"
+      ((todo "BLOCKED|REVIEW" ((org-agenda-overriding-header "Needs my attention")))
+       (todo "DOING|NEXT"     ((org-agenda-overriding-header "In flight")))
+       (tags-todo "+decision" ((org-agenda-overriding-header "Open decisions")))
+       (tags-todo "+finding"  ((org-agenda-overriding-header "Findings to triage"))))
+      ((org-agenda-files '("~/org/kirocage.org"))
+       (org-agenda-dim-blocked-tasks nil))))
 
   ;; Set todo keywords
   (setq org-todo-keywords
@@ -913,7 +799,7 @@ ALIST is the option channel for display actions (see `display-buffer')."
 
         org-tags-column -80
         org-log-done 'time
-        org-catch-invisible-edits 'smart
+        org-fold-catch-invisible-edits 'smart
         org-startup-indented t
 	org-ellipsis " ▾"
         org-pretty-entities nil
@@ -954,40 +840,7 @@ ALIST is the option channel for display actions (see `display-buffer')."
                (not (string= (org-get-todo-state) "DOING")))
       (org-todo "DOING")))
   (add-hook 'org-clock-in-hook 'my/org-change-todo-to-doing-on-clock-in)
-
-  ;; Custom macros for LA
-  (fset 'copy-previous-analysis
-	(kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\M-b ?\M-f ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-u ?\C-  ?\C-u ?\C-  ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return ?\C-c ?\C-n ?\C-o ?\C-y ?\C-c ?\C-t ?d] 0 "%d"))
-
-
-  (keymap-set org-mode-map "C-x C-z a" #'copy-previous-analysis)
-
-
-  (fset 'append-analysis
-        (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\C-c ?\C-n ?\C-  ?\C-r ?- ?- ?- return ?\C-a ?\M-w ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\M-> ?\C-r ?\C-y return ?\C-c ?\C-n ?\C-o ?\C-y ?\M-y] 0 "%d"))
-
-  (keymap-set org-mode-map "C-x C-z A" #'append-analysis)
-
-
-  (fset 'goto-previous-analysis
-        (kmacro-lambda-form [?\C-n ?\C-c ?\C-p ?\M-f ?\C-f ?\C-\M-@ ?\M-w ?\C-r ?\C-y ?\C-r return ?\M-x ?o ?r ?g ?- ?s ?h ?o ?w ?- ?s ?u ?b ?t ?r ?e ?e return] 0 "%d"))
-
-  (keymap-set org-mode-map "C-x C-z s" #'goto-previous-analysis)
-
-  (fset 'TR
-        (kmacro-lambda-form [?\C-a escape ?\C-  ?\M-w escape ?\C-  ?\C-c ?\C-l ?h ?t ?t ?p ?s ?: ?/ ?/ ?m ?h ?w ?e ?b ?. ?e ?r ?i ?c ?s ?s ?o ?n ?. ?s ?e ?/ ?T ?R ?E ?d ?i ?t ?W ?e ?b ?/ ?f ?a ?c ?e ?s ?/ ?o ?o ?/ ?o ?b ?j ?e ?c ?t ?. ?x ?h ?t ?m ?l ?? ?e ?r ?i ?r ?e ?f ?= ?\C-y return return] 0 "%d"))
-
-  (keymap-set org-mode-map "C-x C-z T" #'TR)
-
-  (fset 'ticket
-        (kmacro-lambda-form [?\C-a escape ?\C-  ?\C-w ?\C-c ?\C-l ?h ?t ?t ?p ?s ?: ?/ ?/ ?e ?t ?e ?a ?m ?p ?r ?o ?j ?e ?c ?t ?. ?i ?n ?t ?e ?r ?n ?a ?l ?. ?e ?r ?i ?c ?s ?s ?o ?n ?. ?c ?o ?m ?/ ?b ?r ?o ?w ?s ?e ?/ ?P backspace ?\C-y return ?\C-y return] 0 "%d"))
-
-  (keymap-set org-mode-map "C-x C-z t" #'ticket)
-
-  (fset 'posijediti
-	(kmacro-lambda-form [?\C-a escape ?\C-f ?\C-f ?\C-f ?\C-f ?= ?\C-e ?= ?\C-n] 0 "%d"))
-
-  (keymap-set org-mode-map "C-x C-z p" #'posijediti))
+)
 
 (use-package dired
   :ensure nil
@@ -1175,44 +1028,10 @@ argument."
                                      recenter-top-bottom other-window))
   (advice-add command :after #'pulse-line))
 
-;; treesit is part of Emacs 29, but grammars still need to be downloaded and installed.
-;; This snippet was taken from:
-;; https://www.nathanfurnal.xyz/posts/building-tree-sitter-langs-emacs/
-(use-package treesit
-  :ensure nil
-  :commands (treesit-install-language-grammar nf/treesit-install-all-languages)
-  :init
-  (setq treesit-language-source-alist
-   '((bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
-     (c . ("https://github.com/tree-sitter/tree-sitter-c"))
-     (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
-     (css . ("https://github.com/tree-sitter/tree-sitter-css"))
-     (go . ("https://github.com/tree-sitter/tree-sitter-go"))
-     (html . ("https://github.com/tree-sitter/tree-sitter-html"))
-     (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
-     (java . ("https://github.com/tree-sitter/tree-sitter-java"))
-     (json . ("https://github.com/tree-sitter/tree-sitter-json"))
-     (lua . ("https://github.com/Azganoth/tree-sitter-lua"))
-     (make . ("https://github.com/alemuller/tree-sitter-make"))
-     (python . ("https://github.com/tree-sitter/tree-sitter-python"))
-     (php . ("https://github.com/tree-sitter/tree-sitter-php"))
-     (ruby . ("https://github.com/tree-sitter/tree-sitter-ruby"))
-     (rust . ("https://github.com/tree-sitter/tree-sitter-rust"))
-     (sql . ("https://github.com/m-novikov/tree-sitter-sql"))
-     (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
-     (zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
-
-  (add-to-list 'major-mode-remap-alist
-             '(java-mode . java-ts-mode))
-  :config
-  (defun nf/treesit-install-all-languages ()
-    "Install all languages specified by `treesit-language-source-alist'."
-    (interactive)
-    (let ((languages (mapcar 'car treesit-language-source-alist)))
-      (dolist (lang languages)
-	      (treesit-install-language-grammar lang)
-	      (message "`%s' parser was installed." lang)
-	      (sit-for 0.75)))))
+;; Each built-in *-ts-mode declares its own grammar source, and
+;; `treesit-auto-install-grammar' (default `ask') offers to install a
+;; missing grammar when the mode is first used.
+(setopt treesit-enabled-modes '(java-ts-mode python-ts-mode))
 
 (use-package eglot
   :bind (:map eglot-mode-map
@@ -1224,12 +1043,9 @@ argument."
   (advice-add 'eglot-completion-at-point :around  #'cape-wrap-buster)
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-noninterruptible)
 
-  (setq completion-category-overrides '((eglot (styles orderless))))
-  (setq completion-category-defaults nil)
-
   :custom
   (eglot-autoshutdown t)
-  (eglot-events-buffer-size 0)
+  (eglot-events-buffer-config '(:size 0 :format full))
   (eglot-extend-to-xref nil)
   (eglot-report-progress nil)
   (eglot-ignored-server-capabilities
@@ -1243,16 +1059,11 @@ argument."
   ;; (eglot-stay-out-of '(yasnippet))
   )
 
-(use-package jarchive
-  :after eglot
-  :config
-  (jarchive-mode))
-
 (use-package eglot-booster
 	:after eglot
 	:config	(eglot-booster-mode))
 
-(use-package clojure
+(use-package clojure-mode
   :init
   (eval-after-load 'cider
   '(progn
@@ -1268,7 +1079,7 @@ argument."
   (add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.cljs.*$" . clojure-mode))
-  (add-to-list 'auto-mode-alist '("lein-env" . enh-ruby-mode))
+  (add-to-list 'auto-mode-alist '("lein-env" . ruby-mode))
 
   ;; provides minibuffer documentation for the code you're typing into the repl
   (add-hook 'cider-mode-hook 'eldoc-mode)
@@ -1358,6 +1169,9 @@ Repeated invocations toggle between the two most recently open buffers."
                                     (delete-other-windows)
                                     (end-of-buffer)))
 					; populate with personal keybinding sequences
+    (keymap-set my-keymap "s" #'isearch-forward)
+    (keymap-set my-keymap "r" #'isearch-backward)
+    (keymap-set my-keymap "b" #'consult-buffer)
     )
 
   ;; Maybe useful
@@ -1376,15 +1190,6 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; I call this function.
   (keymap-global-set "C-x k" #'kill-current-buffer))
 
-(use-package codium
-  :vc (:url https://github.com/Exafunction/codeium.el)
-  :init
-  (setq-default codeium-enterprise t)
-  (setq-default codeium-portal-url
-		"https://codingbuddy.onprem.gic.ericsson.se")
-  (setq-default codeium-api-url
-		"https://codingbuddy.onprem.gic.ericsson.se/_route/api_server")
-  (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
 
 
 (use-package mood-line
