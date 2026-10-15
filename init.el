@@ -632,10 +632,7 @@ ALIST is the option channel for display actions (see `display-buffer')."
 ;; with zero configuration.
 (use-package dumb-jump
   :init
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 100)
-  :config
-  ;; use completion system instead of popup window
-  (setq xref-show-definitions-function #'xref-show-definitions-completing-read))
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 100))
 
 (use-package sh-script
   :config
@@ -650,37 +647,10 @@ ALIST is the option channel for display actions (see `display-buffer')."
                                             comint-input-ignoredups t)
 			     (keymap-set comint-mode-map "C-c C-o" nil)
 			     (keymap-set comint-mode-map "C-c o" 'comint-delete-output)
-			     (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)))
+			     (add-hook 'comint-output-filter-functions #'comint-truncate-buffer nil t)))
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 (add-hook 'shell-mode-hook (lambda () (auto-fill-mode -1)
                              (abbrev-mode 1)))
-
-(with-eval-after-load "shell"
-  (defun get-tgf-job-id ()
-  "Yank first word on the line, and go to the prompt."
-  (move-beginning-of-line nil)
-  (mark-word)
-  (kill-ring-save nil nil t)
-  (end-of-buffer))
-
-(defun print-dtjob ()
-  "Print dtjob from the tgf job on current line."
-  (interactive)
-  (get-tgf-job-id)
-  (insert "dt ")
-  (yank)
-  (comint-send-input))
-
-(defun open-tgf-log ()
-  "Open tgf log on current line"
-  (interactive)
-  (get-tgf-job-id)
-  (insert "ol ")
-  (yank)
-  (comint-send-input))
-
-(keymap-set shell-mode-map "C-<return>" #'print-dtjob)
-(keymap-set shell-mode-map "S-<return>" #'open-tgf-log)
 
 ;; Better support for files with long lines
 (setq-default bidi-paragraph-direction 'left-to-right)
@@ -1058,10 +1028,6 @@ argument."
      :foldingRangeProvider))
   ;; (eglot-stay-out-of '(yasnippet))
   )
-
-(use-package eglot-booster
-	:after eglot
-	:config	(eglot-booster-mode))
 
 (use-package clojure-mode
   :init
