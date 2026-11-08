@@ -29,13 +29,13 @@
 (setq read-process-output-max (* 1024 1024))
 
 (set-face-attribute 'default nil
-                    :family "JetBrains Mono"  ; or "Iosevka", "Fira Code", "Cascadia Code", "JetBrains Mono"
+                    :family "JetBrainsMono Nerd Font"  ; must match an installed family exactly (see `fc-list : family`)
                     :height 110
                     :weight 'regular)
 
 ;; variable-pitch for org/prose
 (set-face-attribute 'variable-pitch nil
-                    :family "Cantarell"
+                    :family "Noto Sans"
                     :height 130)
 
 
