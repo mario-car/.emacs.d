@@ -682,6 +682,8 @@ ALIST is the option channel for display actions (see `display-buffer')."
   :bind (("C-c e" . #'macrostep-expand)))
 
 (use-package org
+  ;; Load after 2s of idle time so the first org buffer opens instantly.
+  :defer 2
   :bind (:map org-mode-map
 
               ;; By default, Org maps C-<up> to
@@ -697,6 +699,11 @@ ALIST is the option channel for display actions (see `display-buffer')."
           ("C-c a" . #'org-agenda)
           ("C-c c" . #'org-capture))
   :config
+
+  ;; Preload `org-modules' (ol-gnus, ol-eww, ...). Org otherwise loads
+  ;; them on the first `org-mode' activation, which is most of the
+  ;; first-open delay.
+  (org-load-modules-maybe)
 
   ;; If you try to insert a heading in the middle of an entry, don't
   ;; split it in half, but instead insert the new heading after the
@@ -806,6 +813,10 @@ ALIST is the option channel for display actions (see `display-buffer')."
   (add-hook 'org-clock-in-hook 'my/org-change-todo-to-doing-on-clock-in)
 )
 
+;; Preload the Org agenda and capture libraries when idle, after Org.
+(use-package org-agenda  :ensure nil :defer 3)
+(use-package org-capture :ensure nil :defer 3)
+
 (use-package dired
   :ensure nil
   :init
@@ -886,6 +897,8 @@ ALIST is the option channel for display actions (see `display-buffer')."
 ;; Package `magit' provides a full graphical interface for Git within
 ;; Emacs.
 (use-package magit
+  ;; Load after 4s of idle time, after Org, so `magit-status' opens fast.
+  :defer 4
   :bind (;; This is the primary entry point for Magit. Binding to C-x
          ;; g is recommended in the manual:
          ;; https://magit.vc/manual/magit.html#Getting-Started
