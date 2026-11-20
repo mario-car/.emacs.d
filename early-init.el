@@ -18,13 +18,16 @@
       inhibit-startup-buffer-menu t
       make-pointer-invisible t)
 
+;; Set before any package is loaded, so stale .elc files are never
+;; preferred over newer .el sources.
+(setq load-prefer-newer t)
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-;; Performance tweaking for modern machines
-;; Disable frequency of GC. This helps performance both during init
-;; and after init. Value is in bytes so this is 100MB, as suggested in
-;; <https://github.com/emacs-lsp/lsp-mode#performance>.
+;; Performance tweaking for modern machines.
+;; A high GC threshold (100MB) speeds up startup; init.el lowers it on
+;; `emacs-startup-hook' so pauses stay short during editing.
 (setq gc-cons-threshold (* 100 1024 1024))
 (setq read-process-output-max (* 1024 1024))
 
@@ -43,8 +46,4 @@
               right-margin-width 1)
 (add-to-list 'default-frame-alist '(internal-border-width . 1))
 
-
-;; Better default modes
-(electric-pair-mode t)
-(recentf-mode t)
 (pixel-scroll-precision-mode 1)
